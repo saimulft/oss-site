@@ -166,7 +166,7 @@ export default async function PackagePageView({ params }: PageProps<'/[slug]'>) 
               <SectionHead id="features">Features</SectionHead>
               <dl className="mt-8 mb-0 grid gap-x-10 gap-y-8 sm:grid-cols-2">
                 {pkg.features.map((f, i) => (
-                  <div key={f.title} className="reveal border-l-[3px] border-peach pl-5">
+                  <div key={f.title} className="reveal border-l-[3px] border-peach pl-5 sm:last:odd:col-span-2">
                     <dt className="flex items-baseline gap-3 text-[1.1875rem] font-bold tracking-[-0.015em]">
                       <span className="font-mono text-sm font-medium text-ember tabular-nums">
                         {String(i + 1).padStart(2, '0')}
