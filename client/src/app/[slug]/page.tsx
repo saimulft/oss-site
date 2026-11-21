@@ -7,7 +7,7 @@ import { JsonLd } from '@/components/json-ld';
 import { PackageCard } from '@/components/package-card';
 import { PageHero } from '@/components/page-hero';
 import { pageMetadata } from '@/lib/metadata';
-import { absolute, author, getPackage, ogImagePath, packages, pagePath, seoFor } from '@/lib/site';
+import { absolute, author, authorProfiles, getPackage, ogImagePath, packages, pagePath, seoFor } from '@/lib/site';
 
 export const dynamicParams = false;
 
@@ -67,7 +67,16 @@ export default async function PackagePageView({ params }: PageProps<'/[slug]'>) 
       programmingLanguage: 'TypeScript',
       runtimePlatform: 'Node.js',
       license: 'https://opensource.org/licenses/MIT',
-      author: { '@type': 'Person', name: author.name, url: author.url, sameAs: [author.github] },
+      isAccessibleForFree: true,
+      keywords: pkg.keywords.join(', '),
+      author: {
+        '@type': 'Person',
+        '@id': `${author.url}/#person`,
+        name: author.name,
+        url: author.url,
+        jobTitle: author.role,
+        sameAs: authorProfiles,
+      },
       sameAs: [pkg.npm],
     },
     {

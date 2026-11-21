@@ -41,3 +41,13 @@ test('copy has no dashes used as punctuation', () => {
   const text = JSON.stringify({ hub, packages });
   assert.ok(!/[–—]/.test(text), 'found an en or em dash');
 });
+
+test('every package has a release entry for the sitemap and llms.txt', async () => {
+  const { releases } = await import('./releases.ts');
+  for (const p of packages) {
+    const r = releases[p.slug];
+    assert.ok(r, `${p.slug}: no release entry`);
+    assert.match(r.version, /^\d+\.\d+\.\d+$/, `${p.slug}: version`);
+    assert.match(r.date, /^\d{4}-\d{2}-\d{2}$/, `${p.slug}: date`);
+  }
+});

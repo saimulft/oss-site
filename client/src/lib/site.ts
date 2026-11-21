@@ -1,4 +1,5 @@
 import { hub, packages, type Category, type PackagePage } from '@/content/packages';
+import { releases } from '@/content/releases';
 
 /** The public origin, for canonical URLs, the sitemap and Open Graph tags. Set NEXT_PUBLIC_SITE_URL to build for another host. */
 export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://oss.saimulislam.com').replace(/\/$/, '');
@@ -8,8 +9,22 @@ export const author = {
   name: 'Saimul Islam',
   url: 'https://saimulislam.com',
   github: 'https://github.com/saimulft',
+  linkedin: 'https://www.linkedin.com/in/saimulislamdl',
+  npm: 'https://www.npmjs.com/~saimulislamdl',
   role: 'Forward Deployed Engineer and Solutions Architect',
 };
+
+/** The author's public profiles, for JSON-LD sameAs, so search engines and AI assistants tie the pages to one person. */
+export const authorProfiles = [author.github, author.linkedin, author.npm];
+
+/** A package's latest npm release. */
+export const releaseOf = (slug: string) => releases[slug];
+
+/** The newest release date across all packages, for the hub's lastmod. */
+export const lastRelease = Object.values(releases)
+  .map((r) => r.date)
+  .sort()
+  .at(-1);
 
 /** Category order on the hub and in the footer. */
 export const categories: Category[] = [

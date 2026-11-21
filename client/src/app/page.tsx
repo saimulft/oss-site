@@ -3,7 +3,18 @@ import { ArrowRight, Github } from '@/components/icons';
 import { PackageCard } from '@/components/package-card';
 import { PageHero } from '@/components/page-hero';
 import { pageMetadata } from '@/lib/metadata';
-import { absolute, author, categories, hub, ogImagePath, packages, packagesIn, pagePath, seoFor } from '@/lib/site';
+import {
+  absolute,
+  author,
+  authorProfiles,
+  categories,
+  hub,
+  ogImagePath,
+  packages,
+  packagesIn,
+  pagePath,
+  seoFor,
+} from '@/lib/site';
 
 export const metadata = pageMetadata({
   title: hub.title,
@@ -40,7 +51,8 @@ export default function HubPage() {
     '@id': `${author.url}/#person`,
     name: author.name,
     url: author.url,
-    sameAs: [author.github],
+    jobTitle: author.role,
+    sameAs: authorProfiles,
   };
 
   return (
