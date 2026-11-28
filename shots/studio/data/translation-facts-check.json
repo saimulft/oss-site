@@ -1,0 +1,31 @@
+{
+ "pkg": "translation-facts",
+ "what": "The facts that must survive translation",
+ "title": "~/app/locales",
+ "commands": [
+  "npx translation-facts en.json de.json fr.json --keep Acme"
+ ],
+ "output": "de.json: 6 problems\n  pricing.title: missing Acme (term)\n  pricing.standard: changed $49.99 -> 49,99 € (price)\n  pricing.discount: missing 20% (percent)\n  pricing.contact: changed https://acme.example/pricing -> https://acme.example/preise (url)\n  pricing.contact: changed sales@acme.example -> vertrieb@acme.example (email)\n  cart.greeting: changed {name} -> {nom} (token)\nfr.json: ok (6 keys checked)\n\n6 problems in 1 of 2 files.\n",
+ "rules": [
+  [
+   "^de\\.json",
+   "err"
+  ],
+  [
+   "^fr\\.json: ok",
+   "ok"
+  ],
+  [
+   ": missing ",
+   "err"
+  ],
+  [
+   ": changed ",
+   "warn"
+  ],
+  [
+   "problems in",
+   "head"
+  ]
+ ]
+}

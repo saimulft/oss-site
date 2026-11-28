@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>mcp-guardrails flow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;500;600&display=block"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="studio.css?v=3" />
+    <style>
+      .chat {
+        padding: 24px;
+        display: grid;
+        gap: 16px;
+      }
+      .msg {
+        max-width: 520px;
+        padding: 12px 16px;
+        border-radius: 16px;
+        font-size: 16px;
+        line-height: 1.45;
+        border: 1.5px solid var(--ink);
+      }
+      .user {
+        justify-self: end;
+        background: var(--midnight);
+        color: #fff;
+        border-bottom-right-radius: 4px;
+      }
+      .agent {
+        justify-self: start;
+        background: #fff;
+        border-bottom-left-radius: 4px;
+      }
+      .call {
+        border: 1.5px solid var(--ink);
+        border-radius: 14px;
+        overflow: hidden;
+        background: var(--night);
+        font: 400 14px/1.55 'JetBrains Mono', monospace;
+        color: var(--term-text);
+      }
+      .call .req {
+        padding: 10px 14px;
+        color: #fff;
+        border-bottom: 1px solid #2a3c50;
+      }
+      .call .req b {
+        color: var(--peach);
+        font-weight: 600;
+      }
+      .call .res {
+        padding: 10px 14px 12px;
+        white-space: pre-wrap;
+      }
+      .step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--slate);
+        margin-bottom: -6px;
+      }
+      .step i {
+        font-style: normal;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: var(--ink);
+        color: #fff;
+        font-size: 12.5px;
+      }
+      .plan {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 10px;
+      }
+      .btn {
+        display: inline-flex;
+        padding: 7px 14px;
+        border-radius: 10px;
+        border: 1.5px solid var(--ink);
+        font-weight: 700;
+        font-size: 14px;
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+      .btn.go {
+        background: var(--signal);
+        color: #fff;
+      }
+      .cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        align-items: start;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame" id="frame">
+      <p class="label"><span class="pkg">mcp-guardrails</span><span class="what">An agent deletes a note: refused, previewed, confirmed, undoable</span></p>
+      <div class="cols">
+        <div class="panel">
+          <div class="panel-head">Chat <small>MCP client</small></div>
+          <div class="chat">
+            <div class="msg user">Delete my "Hello" note.</div>
+            <div class="step"><i>1</i>The agent tries to delete straight away</div>
+            <div class="call">
+              <div class="req">→ <b>notes_delete</b> { "id": "n1", "expectedVersion": 1 }</div>
+              <div class="res"><span class="err">← confirmation_required</span>
+<span class="dim">"Call notes_delete with dryRun: true first, show the user the plan, then call it again with the same arguments plus previewToken and confirm: true."</span></div>
+            </div>
+            <div class="step"><i>2</i>It does a dry run: nothing changes</div>
+            <div class="call">
+              <div class="req">→ <b>notes_delete</b> { …, "dryRun": true }</div>
+              <div class="res"><span class="ok">← plan</span> { "deletes": { "id": "n1", "title": "Hello", "version": 1 } }
+  <span class="warn">previewToken</span> "eyJ2IjoxLC…"  <span class="dim">expires 12:15</span></div>
+            </div>
+            <div class="msg agent">
+              This will delete the note <b>Hello</b> (version 1). Go ahead?
+              <div class="plan"><span class="btn go">Delete</span><span class="btn">Cancel</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">After the user agrees <small>same arguments, the token, confirm</small></div>
+          <div class="chat">
+            <div class="msg user">Yes, delete it.</div>
+            <div class="step"><i>3</i>Confirmed with the token from the preview</div>
+            <div class="call">
+              <div class="req">→ <b>notes_delete</b> { …, "previewToken": "eyJ2…", "confirm": true }</div>
+              <div class="res"><span class="ok">← { "deleted": "n1", "revisionId": "4c0d…" }</span></div>
+            </div>
+            <div class="step"><i>4</i>The token only works for what was previewed</div>
+            <div class="call">
+              <div class="req">→ <b>notes_delete</b> { "id": "n2", …, "previewToken": "eyJ2…", "confirm": true }</div>
+              <div class="res"><span class="err">← preview_mismatch</span> <span class="dim">["resource", "payload"]</span></div>
+            </div>
+            <div class="step"><i>5</i>And every change can be undone</div>
+            <div class="call">
+              <div class="req">→ <b>revisions_restore</b> { "revisionId": "4c0d…", "confirm": true }</div>
+              <div class="res"><span class="ok">← { "restoredFrom": "4c0d…", "deleted": false }</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.fonts.ready.then(() => document.body.setAttribute('data-ready', ''));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+[
+  {
+    app: 'Code',
+    appId: 'com.microsoft.VSCode',
+    startMs: 1772442000000,
+    endMs: 1772442008000
+  },
+  {
+    app: 'Google Chrome',
+    appId: 'com.google.Chrome',
+    host: 'github.com',
+    startMs: 1772442008000,
+    endMs: 1772442019000
+  }
+]
+[
+  {
+    key: 'github.com',
+    name: 'github.com',
+    durationMs: 11000,
+    segmentCount: 1
+  }
+]

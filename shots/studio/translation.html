@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>translation-facts side by side</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;500;600&display=block"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="studio.css?v=3" />
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15.5px;
+        line-height: 1.5;
+      }
+      th {
+        text-align: left;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--slate);
+        padding: 12px 18px;
+        border-bottom: 1.5px solid var(--ink);
+        background: var(--mist);
+      }
+      td {
+        padding: 13px 18px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      td.key {
+        font: 500 13.5px 'JetBrains Mono', monospace;
+        color: var(--slate);
+        width: 170px;
+        white-space: nowrap;
+      }
+      mark {
+        border-radius: 5px;
+        padding: 1px 4px;
+        font-weight: 600;
+      }
+      mark.fact {
+        background: #e5edf4;
+        color: var(--ink);
+      }
+      mark.bad {
+        background: #ffe3dc;
+        color: var(--ember);
+      }
+      .miss {
+        display: inline-block;
+        margin-left: 6px;
+        padding: 1px 7px;
+        border-radius: 999px;
+        border: 1.5px dashed var(--ember);
+        color: var(--ember);
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .verdict {
+        width: 230px;
+        font-size: 13.5px;
+        font-weight: 700;
+      }
+      .verdict .ok {
+        color: #1c7a45;
+      }
+      .verdict .bad {
+        color: var(--ember);
+      }
+      .verdict small {
+        display: block;
+        font: 500 12.5px 'JetBrains Mono', monospace;
+        color: var(--slate);
+        margin-top: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame" id="frame">
+      <p class="label"><span class="pkg">translation-facts</span><span class="what">en.json against de.json: what changed in translation</span></p>
+      <div class="panel">
+        <table>
+          <thead>
+            <tr><th>Key</th><th>en.json</th><th>de.json</th><th>translation-facts</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="key">pricing.title</td>
+              <td><mark class="fact">Acme</mark> pricing, made simple</td>
+              <td>Preise, ganz einfach<span class="miss">Acme</span></td>
+              <td class="verdict"><span class="bad">missing Acme</span><small>term (--keep Acme)</small></td>
+            </tr>
+            <tr>
+              <td class="key">pricing.standard</td>
+              <td>Acme Standard is <mark class="fact">$49.99</mark> per month for 5 seats.</td>
+              <td>Acme Standard kostet <mark class="bad">49,99 €</mark> pro Monat für 5 Plätze.</td>
+              <td class="verdict"><span class="bad">changed $49.99 → 49,99 €</span><small>price</small></td>
+            </tr>
+            <tr>
+              <td class="key">pricing.discount</td>
+              <td>Save <mark class="fact">20%</mark> when you pay yearly.</td>
+              <td>Sparen Sie bei jährlicher Zahlung.<span class="miss">20%</span></td>
+              <td class="verdict"><span class="bad">missing 20%</span><small>percent</small></td>
+            </tr>
+            <tr>
+              <td class="key">pricing.contact</td>
+              <td>Questions? Write to <mark class="fact">sales@acme.example</mark> or visit <mark class="fact">https://acme.example/pricing</mark>.</td>
+              <td>Fragen? Schreiben Sie an <mark class="bad">vertrieb@acme.example</mark> oder besuchen Sie <mark class="bad">https://acme.example/preise</mark>.</td>
+              <td class="verdict"><span class="bad">changed email and URL</span><small>email, url</small></td>
+            </tr>
+            <tr>
+              <td class="key">cart.greeting</td>
+              <td>Hello <mark class="fact">{name}</mark>, your order ships in <mark class="fact">3</mark> days.</td>
+              <td>Hallo <mark class="bad">{nom}</mark>, Ihre Bestellung wird in <mark class="fact">3</mark> Tagen versandt.</td>
+              <td class="verdict"><span class="bad">changed {name} → {nom}</span><small>token</small></td>
+            </tr>
+            <tr>
+              <td class="key">cart.total</td>
+              <td>Total: <mark class="fact">{{amount}}</mark></td>
+              <td>Gesamt: <mark class="fact">{{amount}}</mark></td>
+              <td class="verdict"><span class="ok">ok</span><small>placeholder kept</small></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <script>
+      document.fonts.ready.then(() => document.body.setAttribute('data-ready', ''));
+    </script>
+  </body>
+</html>

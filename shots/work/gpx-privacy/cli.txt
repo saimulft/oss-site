@@ -1,0 +1,7 @@
+gpx-privacy: ride.gpx -> ride-public.gpx
+  Trimmed   500 m from the start and the end
+  Points    1,228 -> 500
+  Distance  7.77 km
+  Climb     26 m
+  Descent   21 m
+  Duration  0:40:54

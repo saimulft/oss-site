@@ -5,9 +5,9 @@ import { hub, packages } from './packages.ts';
 
 const slugs = new Set(packages.map((p) => p.slug));
 
-test('nine packages with unique slugs and matching links', () => {
-  assert.equal(packages.length, 9);
-  assert.equal(slugs.size, 9);
+test('ten packages with unique slugs and matching links', () => {
+  assert.equal(packages.length, 10);
+  assert.equal(slugs.size, 10);
   for (const p of packages) {
     assert.equal(p.npm, `https://www.npmjs.com/package/${p.slug}`);
     assert.equal(p.github, `https://github.com/saimulft/${p.slug}`);
@@ -34,6 +34,16 @@ test('titles and descriptions fit search results', () => {
     titles.add(p.title);
     const n = p.description.length;
     assert.ok(n >= 140 && n <= 160, `${p.slug}: description is ${n} characters`);
+  }
+});
+
+test('every shot has alt text and a size, and stills exist for animations', () => {
+  for (const p of packages) {
+    for (const s of p.shots ?? []) {
+      assert.ok(s.alt.length > 20, `${p.slug}/${s.file}: alt text`);
+      assert.ok(s.width > 0 && s.height > 0, `${p.slug}/${s.file}: size`);
+      assert.ok(!s.file.endsWith('.gif') || s.still, `${p.slug}/${s.file}: an animation needs a still`);
+    }
   }
 });
 

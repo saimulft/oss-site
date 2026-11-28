@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>gpx-privacy before and after</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;500;600&display=block"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="studio.css?v=3" />
+    <style>
+      .maps {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+      }
+      .map {
+        height: 470px;
+      }
+      .map .leaflet-tile-pane {
+        filter: grayscale(0.75) brightness(1.04) contrast(0.92);
+      }
+      .leaflet-control-attribution {
+        font: 10px/1.4 'Bricolage Grotesque', sans-serif !important;
+      }
+      .stats {
+        display: flex;
+        gap: 18px;
+        padding: 14px 20px;
+        border-top: 1.5px solid var(--ink);
+        font-size: 15px;
+        color: var(--slate);
+      }
+      .stats b {
+        color: var(--ink);
+      }
+      .home {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--signal);
+        border: 3px solid #fff;
+        box-shadow: 0 0 0 1.5px var(--ink), 0 4px 10px rgba(0, 0, 0, 0.25);
+        display: grid;
+        place-items: center;
+        color: #fff;
+      }
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+      .tag.bad {
+        background: #ffe3dc;
+        color: var(--ember);
+      }
+      .tag.good {
+        background: #dcf5e6;
+        color: #1c7a45;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame" id="frame">
+      <p class="label"><span class="pkg">gpx-privacy</span><span class="what">The same ride, before and after</span></p>
+      <div class="maps">
+        <div class="panel">
+          <div class="panel-head">ride.gpx <span class="tag bad">Starts and ends at home</span></div>
+          <div class="map" id="m1"></div>
+          <div class="stats"><span><b>1,228</b> points</span><span><b>7.77 km</b></span><span>times and heights kept</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">ride-public.gpx <span class="tag good">500 m trimmed at each end</span></div>
+          <div class="map" id="m2"></div>
+          <div class="stats"><span><b>500</b> points</span><span>shape kept</span><span>safe to share</span></div>
+        </div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="data/gpx.js"></script>
+    <script>
+      // Demo ride (made up, along real streets); ride-public.gpx is the real output of `gpx-privacy ride.gpx -o ride-public.gpx`.
+      const tiles = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+      const attribution = '© OpenStreetMap contributors';
+      const bounds = L.latLngBounds(RIDE.raw);
+      const homeIcon = L.divIcon({
+        className: '',
+        html: '<div class="home"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg></div>',
+        iconSize: [34, 34],
+        iconAnchor: [17, 17],
+      });
+      function map(id, track, showHome, showZone) {
+        const m = L.map(id, { zoomControl: false, attributionControl: true, zoomSnap: 0.25 });
+        L.tileLayer(tiles, { attribution, maxZoom: 19 }).addTo(m);
+        m.fitBounds(bounds, { padding: [26, 26] });
+        if (showZone) {
+          L.circle(RIDE.home, { radius: 500, color: '#c93f1b', weight: 2, dashArray: '6 6', fillColor: '#f2502a', fillOpacity: 0.08 }).addTo(m);
+        }
+        L.polyline(track, { color: '#1b2633', weight: 7, opacity: 0.9 }).addTo(m);
+        L.polyline(track, { color: showHome ? '#f2502a' : '#2f7d55', weight: 4 }).addTo(m);
+        if (showHome) L.marker(RIDE.home, { icon: homeIcon }).addTo(m);
+        return m;
+      }
+      map('m1', RIDE.raw, true, false);
+      map('m2', RIDE.shared, false, true);
+      let pending = 0;
+      setTimeout(() => document.fonts.ready.then(() => document.body.setAttribute('data-ready', '')), 2500);
+    </script>
+  </body>
+</html>

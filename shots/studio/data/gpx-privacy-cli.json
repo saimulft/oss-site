@@ -1,0 +1,19 @@
+{
+ "pkg": "gpx-privacy",
+ "what": "Trim, simplify and write a clean copy",
+ "title": "~/rides",
+ "commands": [
+  "gpx-privacy ride.gpx -o ride-public.gpx"
+ ],
+ "output": "gpx-privacy: ride.gpx -> ride-public.gpx\n  Trimmed   500 m from the start and the end\n  Points    1,228 -> 500\n  Distance  7.77 km\n  Climb     26 m\n  Descent   21 m\n  Duration  0:40:54\n",
+ "rules": [
+  [
+   "^gpx-privacy:",
+   "head"
+  ],
+  [
+   "Trimmed|Points",
+   "ok"
+  ]
+ ]
+}

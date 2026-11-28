@@ -1,0 +1,182 @@
+/* The look of saimulislam.com: mist desk with a dot grid, ink lines, hard shadows, midnight terminals. */
+:root {
+  --signal: #f2502a;
+  --ember: #c93f1b;
+  --peach: #ffb49e;
+  --midnight: #213343;
+  --night: #192836;
+  --ink: #1b2633;
+  --slate: #475569;
+  --fog: #d9e2ea;
+  --mist: #f5f8fa;
+  --line: #cfd8e1;
+  --term-text: #dbe4ec;
+  --err: #ff9b85;
+  --warn: #f6c177;
+  --ok: #8fd6a6;
+  --dim: #8ea3b6;
+  --cyan: #8fd0f5;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  background: #fff;
+}
+body {
+  font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+.frame {
+  width: 1200px;
+  padding: 44px 48px 52px;
+  background-color: var(--mist);
+  background-image: radial-gradient(circle, #c9d4de 1.2px, transparent 1.4px);
+  background-size: 22px 22px;
+}
+.label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 18px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.label .pkg {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 10px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 3px 3px 0 var(--ink);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 600;
+}
+.label .pkg::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  background: var(--signal);
+}
+.label .what {
+  color: var(--slate);
+  font-weight: 600;
+}
+.term {
+  border: 1.5px solid var(--ink);
+  border-radius: 18px;
+  background: var(--night);
+  box-shadow: 8px 8px 0 var(--ink);
+  overflow: hidden;
+}
+.term-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 16px;
+  background: var(--midnight);
+  border-bottom: 1.5px solid #0f1a25;
+}
+.term-bar i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: block;
+}
+.term-bar i:nth-child(1) {
+  background: var(--signal);
+}
+.term-bar i:nth-child(2) {
+  background: var(--peach);
+}
+.term-bar i:nth-child(3) {
+  background: var(--fog);
+}
+.term-bar span {
+  flex: 1;
+  text-align: center;
+  margin-right: 52px;
+  color: #a9bccd;
+  font: 500 13px/1 'JetBrains Mono', ui-monospace, monospace;
+}
+.term pre {
+  position: relative;
+  margin: 0;
+  padding: 22px 26px 26px;
+  color: var(--term-text);
+  font: 400 15.5px/1.62 'JetBrains Mono', ui-monospace, monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  overflow: hidden;
+  font-variant-ligatures: none; /* show output exactly as printed: no -> arrows */
+}
+/* Long output fades out instead of being cut or edited. */
+.term pre.clipped {
+  -webkit-mask-image: linear-gradient(#000 78%, transparent);
+  mask-image: linear-gradient(#000 78%, transparent);
+}
+.term .cmd {
+  color: #fff;
+  font-weight: 500;
+}
+.term .prompt {
+  color: var(--peach);
+  font-weight: 600;
+}
+.err {
+  color: var(--err);
+}
+.warn {
+  color: var(--warn);
+}
+.ok {
+  color: var(--ok);
+}
+.dim {
+  color: var(--dim);
+}
+.head {
+  color: #fff;
+  font-weight: 600;
+}
+.cyan {
+  color: var(--cyan);
+}
+.panel {
+  border: 1.5px solid var(--ink);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 8px 8px 0 var(--ink);
+  overflow: hidden;
+}
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1.5px solid var(--ink);
+  font-weight: 700;
+  font-size: 16px;
+}
+.panel-head small {
+  font: 500 13px 'JetBrains Mono', monospace;
+  color: var(--slate);
+}
+.mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+.mono,
+.code,
+.call,
+code {
+  font-variant-ligatures: none;
+}

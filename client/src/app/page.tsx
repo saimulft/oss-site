@@ -134,7 +134,7 @@ export default function HubPage() {
               id="packages-title"
               className="mt-5 mb-0 text-[clamp(2.25rem,4.4vw,3.75rem)] leading-none font-bold tracking-[-0.035em] text-balance"
             >
-              Nine packages, grouped by the job they do
+              Ten packages, grouped by the job they do
             </h2>
           </div>
 
@@ -161,7 +161,7 @@ export default function HubPage() {
               {others.map((p, i) => (
                 <li
                   key={p.slug}
-                  className={`reveal ${i < 3 ? 'lg:col-span-2' : 'lg:col-span-3'} ${i === others.length - 1 ? 'sm:col-span-2' : ''}`}
+                  className={`reveal ${others.length % 3 === 0 || i < 3 ? 'lg:col-span-2' : 'lg:col-span-3'} ${i === others.length - 1 && others.length % 2 === 1 ? 'sm:col-span-2' : ''}`}
                 >
                   <PackageCard pkg={p} headingLevel={4} showCategory />
                 </li>

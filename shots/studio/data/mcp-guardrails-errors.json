@@ -1,0 +1,25 @@
+{
+ "pkg": "mcp-guardrails",
+ "what": "Refusals that tell the agent what to do next",
+ "title": "tools/call",
+ "commands": [],
+ "output": "// A stale version is refused with the current one.\n→ notes_update { \"id\": \"n3\", \"expectedVersion\": 4, \"patch\": { \"title\": \"New\" } }\n← isError: { \"error\": { \"code\": \"version_conflict\", \"currentVersion\": 6, \"expectedVersion\": 4,\n    \"message\": \"note \\\"n3\\\" was changed since you read it (current version 6, you sent 4). Read it again, redo your change on the current data, and pass the new version.\" } }\n\n// A guessed field name comes back with the real ones.\n→ notes_update { \"id\": \"n3\", \"expectedVersion\": 6, \"patch\": { \"titel\": \"New\" } }\n← isError: { \"error\": { \"code\": \"unknown_field\", \"fields\": [\"titel\"], \"knownFields\": [\"title\", \"body\", \"status\"],\n    \"didYouMean\": { \"titel\": \"title\" }, \"message\": \"Unknown field in patch: \\\"titel\\\". Known fields: …\" } }\n",
+ "rules": [
+  [
+   "^//",
+   "dim"
+  ],
+  [
+   "^→",
+   "cyan"
+  ],
+  [
+   "^← isError",
+   "err"
+  ],
+  [
+   "^    \"",
+   "err"
+  ]
+ ]
+}

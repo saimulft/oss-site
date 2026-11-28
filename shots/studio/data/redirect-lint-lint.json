@@ -1,0 +1,39 @@
+{
+ "pkg": "redirect-lint",
+ "what": "Chains, loops and clashes in a whole rule set",
+ "title": "~/marketing-site",
+ "commands": [
+  "npx redirect-lint _redirects --pages dist"
+ ],
+ "output": "_redirects (redirects, 10 rules)\n\nErrors (1)\n  line 6  loop  /team → /about/team → /team is a loop, so none of them is served.\n\nWarnings (8)\n  line 2   chain        /pricing-old → /pricing-2025 → /pricing. Served as /pricing-old → /pricing.\n  line 4   clash        /blog/* covers 6 live pages, such as /blog/first.\n  line 5   shadowed     /blog/hello is never reached: /blog/* (line 4) matches the same paths first on hosts that use the first match.\n  line 5   clash        /blog/hello is a live page. The redirect hides it on hosts that apply redirects first.\n  line 10  unsupported  /search?q=shoes: Query strings in the From are not supported. Matching on query parameters needs the host.\n  line 11  clash        /contact is a live page. The redirect hides it on hosts that apply redirects first.\n  line 12  unsupported  /api/*: 200 rewrites and proxies are not redirects, so they are not checked.\n  line 13  chain        /old-contact → /contact → /contact-us. Served as /old-contact → /contact-us.\n\n1 error, 8 warnings in 10 rules.\n",
+ "rules": [
+  [
+   "^_redirects",
+   "head"
+  ],
+  [
+   "^Errors",
+   "err"
+  ],
+  [
+   "^  line \\d+ +loop",
+   "err"
+  ],
+  [
+   "^Warnings",
+   "warn"
+  ],
+  [
+   "^  line \\d+ +(chain|clash|shadowed)",
+   "warn"
+  ],
+  [
+   "^  line \\d+ +unsupported",
+   "dim"
+  ],
+  [
+   "error.*warnings? in",
+   "head"
+  ]
+ ]
+}

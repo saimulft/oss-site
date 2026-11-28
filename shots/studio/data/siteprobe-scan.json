@@ -1,0 +1,40 @@
+{
+ "pkg": "siteprobe",
+ "what": "Security, SEO and speed in one pass",
+ "title": "~/acme",
+ "commands": [
+  "npx siteprobe https://example.com"
+ ],
+ "output": "siteprobe https://example.com\n\nsecurity   64/100  D  3 high, 1 medium, 3 low, 4 info, 16 passed\nseo        40/100  F  3 high, 3 medium, 1 low, 6 info, 6 passed\nspeed      95/100  A  1 low, 20 passed\n\nHIGH (6)\n  [security] Content-Security-Policy header missing (missing-csp)\n      Fix: Add a Content-Security-Policy header. Minimum: Content-Security-Policy: default-src 'self'\n  [security] HSTS (HTTP Strict-Transport-Security) not configured (missing-hsts)\n      Fix: Add: Strict-Transport-Security: max-age=31536000; includeSubDomains; preload\n  [security] HTTP does not redirect to HTTPS (no-https-redirect)\n      Fix: Set up a permanent 301 redirect from HTTP to HTTPS at the server, load balancer, or CDN level.\n  [seo] Missing meta description (missing-meta-description)\n      Fix: Add <meta name=\"description\" content=\"…\"> with 150–160 characters summarizing the page.\n  [seo] No H1 heading found (missing-h1)\n      Fix: Add one clear H1 that describes the page content and includes your primary keyword.\n  [seo] Little text in the page's HTML (~25 words) (thin-content)\n      Fix: Put the page's main text in the HTML, rendered on the server if JavaScript builds it now, and make sure it answers what people search for.\n\nMEDIUM (4)\n  [security] Clickjacking protection missing (missing-xfo)\n      Fix: Add: X-Frame-Options: SAMEORIGIN — or use CSP: Content-Security-Policy: frame-ancestors 'self'\n  [seo] Title too short (14 characters) (short-title)\n      Fix: Aim for 50–60 characters (25–30 in Chinese, Japanese or Korean) including brand and primary keyword.\n  [seo] Missing canonical URL (missing-canonical)\n      Fix: Add <link rel=\"canonical\" href=\"https://example.com/\"> pointing to the preferred URL.\n  [seo] Incomplete Open Graph tags (incomplete-open-graph)\n      Fix: Add og:title, og:description, og:image, and og:url meta tags.\n\nLOW (5)\n  [security] X-Content-Type-Options header missing (missing-xcto)\n      Fix: Add: X-Content-Type-Options: nosniff\n  [security] Referrer-Policy header missing (missing-referrer-policy)\n      Fix: Add: Referrer-Policy: strict-origin-when-cross-origin\n  [security] Cross-Origin-Opener-Policy (COOP) missing (missing-coop)\n      Fix: Add: Cross-Origin-Opener-Policy: same-origin (or same-origin-allow-popups if needed).\n  [seo] No sitemap found (no-sitemap)\n      Fix: Publish a sitemap at /sitemap.xml, list it in robots.txt and submit it in Google Search Console.\n  [speed] No Cache-Control header on HTML (no-cache-control)\n      Fix: Set appropriate Cache-Control (e.g. max-age=3600 for semi-static pages). Use CDN cache rules for static HTML where possible.\n\n10 info finding(s) hidden. Use --verbose to list them.\n",
+ "clip": 820,
+ "rules": [
+  [
+   "^siteprobe ",
+   "head"
+  ],
+  [
+   "^(security|seo|speed) ",
+   "cyan"
+  ],
+  [
+   "^HIGH",
+   "err"
+  ],
+  [
+   "^MEDIUM",
+   "warn"
+  ],
+  [
+   "^LOW",
+   "dim"
+  ],
+  [
+   "^ +Fix:",
+   "dim"
+  ],
+  [
+   "finding\\(s\\) hidden",
+   "dim"
+  ]
+ ]
+}

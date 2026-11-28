@@ -1,0 +1,3 @@
+/product/rye-bread/
+/about-us/
+/menu/

@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>viewport-qa widths</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;500;600&display=block"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="studio.css?v=3" />
+    <style>
+      /* The README fixture: a page with a fixed 900 px block (div.wide, #fee2e2), 24 px from the left. */
+      .stage {
+        position: relative;
+        height: 520px;
+      }
+      .dev {
+        position: absolute;
+        top: 34px;
+        border: 1.5px solid var(--ink);
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 6px 6px 0 var(--ink);
+      }
+      .dev .bar {
+        height: 30px;
+        border-bottom: 1.5px solid var(--ink);
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        gap: 6px;
+        font: 500 12px 'JetBrains Mono', monospace;
+        color: var(--slate);
+      }
+      .dev .bar i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--line);
+      }
+      .line {
+        position: absolute;
+        height: 9px;
+        border-radius: 6px;
+        background: #e6ecf1;
+      }
+      .wide {
+        position: absolute;
+        height: 96px;
+        background: #fee2e2;
+        border: 2px solid #fca5a5;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        padding-left: 12px;
+        font: 600 12.5px 'JetBrains Mono', monospace;
+        color: #9f1239;
+        white-space: nowrap;
+      }
+      .phone {
+        left: 34px;
+        width: 210px;
+        height: 400px;
+      }
+      .desk {
+        left: 640px;
+        width: 440px;
+        height: 330px;
+      }
+      /* 900 px at the phone's 210 / 390 scale = 485 px: 275 px of it hangs past the right edge. */
+      .phone .wide {
+        left: 13px;
+        top: 150px;
+        width: 485px;
+        border-right-style: dashed;
+      }
+      .phone .wide::after {
+        content: '';
+        position: absolute;
+        left: 197px;
+        right: -2px;
+        top: -2px;
+        bottom: -2px;
+        background: repeating-linear-gradient(135deg, rgba(201, 63, 27, 0.14) 0 8px, transparent 8px 16px);
+        border-radius: 0 8px 8px 0;
+      }
+      /* 900 px at the desktop's 440 / 1440 scale = 275 px: it fits. */
+      .desk .wide {
+        left: 9px;
+        top: 120px;
+        width: 275px;
+      }
+      .edge {
+        position: absolute;
+        left: 244px;
+        top: 120px;
+        height: 318px;
+        border-left: 2px dashed var(--ember);
+      }
+      .edge span {
+        position: absolute;
+        top: -6px;
+        left: 10px;
+        white-space: nowrap;
+        font: 700 12.5px 'Bricolage Grotesque', sans-serif;
+        color: var(--ember);
+      }
+      .over {
+        position: absolute;
+        left: 252px;
+        top: 236px;
+        font: 700 13.5px 'Bricolage Grotesque', sans-serif;
+        color: var(--ember);
+      }
+      .findings {
+        position: absolute;
+        left: 262px;
+        top: 300px;
+        display: grid;
+        gap: 9px;
+      }
+      .chip {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        width: fit-content;
+        padding: 6px 11px;
+        border-radius: 10px;
+        border: 1.5px solid var(--ink);
+        background: #fff;
+        box-shadow: 3px 3px 0 var(--ink);
+        font: 600 13px 'JetBrains Mono', monospace;
+        white-space: nowrap;
+      }
+      .chip b {
+        font: 700 12px 'Bricolage Grotesque', sans-serif;
+        padding: 2px 7px;
+        border-radius: 999px;
+      }
+      .chip.e b {
+        background: #ffd9cf;
+        color: #a3341a;
+      }
+      .chip.w b {
+        background: #ffecc2;
+        color: #8a5b00;
+      }
+      .cap {
+        position: absolute;
+        font-size: 15px;
+        color: var(--slate);
+        line-height: 1.45;
+      }
+      .cap b {
+        color: var(--ink);
+      }
+      .okchip {
+        position: absolute;
+        left: 640px;
+        top: 392px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame" id="frame">
+      <p class="label"><span class="pkg">viewport-qa</span><span class="what">One page, measured at 390 and 1440 px</span></p>
+      <div class="panel">
+        <div class="stage">
+          <div class="dev phone">
+            <div class="bar"><i></i><i></i><i></i>390 × 844</div>
+            <span class="line" style="left: 13px; top: 54px; width: 120px"></span>
+            <span class="line" style="left: 13px; top: 74px; width: 170px"></span>
+            <span class="line" style="left: 13px; top: 94px; width: 150px"></span>
+            <div class="wide">div.wide · 900 px</div>
+            <span class="line" style="left: 13px; top: 272px; width: 160px"></span>
+            <span class="line" style="left: 13px; top: 292px; width: 130px"></span>
+          </div>
+          <div class="edge"><span>viewport edge</span></div>
+          <div class="over">534 px past the edge</div>
+          <div class="findings">
+            <span class="chip e"><b>error</b>horizontal-overflow · html</span>
+            <span class="chip w"><b>warning</b>offscreen-element · div.wide</span>
+            <span class="chip w"><b>warning</b>edge-touching · div.wide</span>
+          </div>
+          <p class="cap" style="left: 34px; top: 452px; width: 470px"><b>390 px: 1 error, 2 warnings.</b> The page scrolls sideways: 924 px wide against a 390 px viewport.</p>
+
+          <div class="dev desk">
+            <div class="bar"><i></i><i></i><i></i>1440 × 900</div>
+            <span class="line" style="left: 9px; top: 54px; width: 160px"></span>
+            <span class="line" style="left: 9px; top: 74px; width: 240px"></span>
+            <span class="line" style="left: 9px; top: 94px; width: 210px"></span>
+            <div class="wide">div.wide · 900 px</div>
+            <span class="line" style="left: 9px; top: 242px; width: 260px"></span>
+            <span class="line" style="left: 9px; top: 262px; width: 220px"></span>
+          </div>
+          <span class="chip okchip" style="color: #1c7a45">no problems</span>
+          <p class="cap" style="left: 640px; top: 452px; width: 440px"><b>1440 px: no problems.</b> The same block fits.</p>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.fonts.ready.then(() => document.body.setAttribute('data-ready', ''));
+    </script>
+  </body>
+</html>

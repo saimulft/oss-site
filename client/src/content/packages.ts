@@ -1,12 +1,25 @@
 // Every word on the site comes from this file. The page templates read `hub` and `packages` and hide any section
 // whose field is empty, so a package can go live with only its slug, name, category, tagline and links.
 
-export type Category = 'Web QA' | 'AI agents' | 'Documents' | 'Localization' | 'Maps and GPS' | 'Desktop apps';
+export type Category =
+  'Web QA' | 'Bug reports' | 'AI agents' | 'Documents' | 'Localization' | 'Maps and GPS' | 'Desktop apps';
 
 export interface CodeSample {
   title?: string;
   lang: 'ts' | 'js' | 'sh' | 'json' | 'html' | 'text';
   code: string;
+}
+
+/** A picture of the package at work, served from `public/shots/<slug>/`. The first one leads the page and the card. */
+export interface Shot {
+  file: string; // file name in public/shots/<slug>/
+  alt: string; // what the picture shows, for screen readers and search
+  title?: string; // a few words in bold before the caption
+  caption?: string; // one or two sentences under the picture
+  width: number; // intrinsic size, so the page does not shift while it loads
+  height: number;
+  still?: string; // for an animated file: the still shown on cards and when motion is reduced
+  half?: boolean; // half width in the gallery (pairs side by side)
 }
 
 export interface HubCopy {
@@ -31,6 +44,8 @@ export interface PackagePage {
   cli?: { usage: string; options: { flag: string; meaning: string }[] };
   limits: string[];
   faq: { q: string; a: string }[];
+  shots?: Shot[]; // the first leads the page and the card; the rest fill the Screenshots section
+  runtime?: string; // where it runs, for structured data (default Node.js)
   keywords: string[]; // target search terms; not rendered as meta keywords
   related: string[]; // slugs
   npm: string; // https://www.npmjs.com/package/<slug>
@@ -40,12 +55,12 @@ export interface PackagePage {
 export const hub: HubCopy = {
   title: 'Open-source npm packages: web QA, MCP, PDF, GPX',
   description:
-    'Nine MIT-licensed TypeScript packages by Saimul Islam for web QA, MCP server security, HTML to PDF, translation checks, GPX privacy and time tracking.',
+    'Ten MIT-licensed TypeScript packages by Saimul Islam for web QA, bug reports, MCP server security, HTML to PDF, translations, GPX privacy and time tracking.',
   h1: 'Open-source npm packages for web QA, MCP servers, PDF and more',
   intro: [
-    'Nine small TypeScript packages, each published on npm under the MIT licence. They cover web QA (security headers, redirects, broken links, responsive layout), MCP servers that let AI agents change data, HTML to PDF, i18n checks on translations, GPX privacy and time tracking from the active window.',
-    'siteprobe runs the free security scanner on DeveloperLook, and safe-html-pdf renders the quotation PDFs in the Bundlewise CRM.',
-    'Every package ships typed exports, documents its limits and runs on Node 20 or newer. Eight of the nine have no runtime dependencies.',
+    'Ten small TypeScript packages, each published on npm under the MIT licence. They cover web QA (security headers, redirects, broken links, responsive layout), screenshot bug reports, MCP servers that let AI agents change data, HTML to PDF, i18n checks on translations, GPX privacy and time tracking from the active window.',
+    'siteprobe runs the free security scanner on DeveloperLook, safe-html-pdf renders the quotation PDFs in the Bundlewise CRM, and bug-finder powers its Report a bug button.',
+    'Every package ships typed exports and documents its limits. Eight of the ten have no runtime dependencies, and every page shows the package at work.',
   ],
 };
 
@@ -212,6 +227,25 @@ export default {
       'lighthouse alternative without chrome',
     ],
     related: ['static-preflight', 'viewport-qa', 'redirect-lint'],
+    shots: [
+      {
+        file: 'scan.webp',
+        alt: 'siteprobe run on example.com in a terminal: security 64 out of 100 grade D, SEO 40 grade F, speed 95 grade A, then each finding with its severity and the fix',
+        title: 'One command, three reports.',
+        caption:
+          'Security headers and cookies, the SEO basics and page speed, each scored, with a fix hint for every finding. The output fades out here; the real run prints all of it.',
+        width: 2400,
+        height: 2028,
+      },
+      {
+        file: 'developerlook-scanner.webp',
+        alt: 'The free security scanner on developerlook.com showing example.com with a score of 55 out of 100 and grade D',
+        title: 'It runs a live scanner.',
+        caption: 'The free website scanner on developerlook.com runs on siteprobe.',
+        width: 1400,
+        height: 650,
+      },
+    ],
     ...links('siteprobe'),
   },
   {
@@ -357,6 +391,25 @@ await writeFile('_redirects', toRedirects(flat));`,
       'wordpress redirection export',
     ],
     related: ['static-preflight', 'siteprobe'],
+    shots: [
+      {
+        file: 'flatten.webp',
+        alt: 'A _redirects file before and after redirect-lint --flatten: on the left the 10 rules with the chain, loop, clash and shadowed lines marked, on the right 8 rules with one hop each',
+        title: 'Every chain becomes one hop.',
+        caption:
+          'The lines the lint reported are marked on the left. --flatten writes the file on the right: one hop per old URL, most specific rule first, the loop left out.',
+        width: 2400,
+        height: 1343,
+      },
+      {
+        file: 'lint.webp',
+        alt: 'redirect-lint in a terminal: 1 error, a loop between /team and /about/team, and 8 warnings for chains, clashes with live pages, a shadowed rule and unsupported rules',
+        title: 'What it found.',
+        caption: 'Each problem with its line number and what the host will actually do.',
+        width: 2400,
+        height: 1439,
+      },
+    ],
     ...links('redirect-lint'),
   },
   {
@@ -544,6 +597,25 @@ if (problems.length) process.exitCode = 1;`,
       'check broken links before deploy',
     ],
     related: ['siteprobe', 'redirect-lint', 'viewport-qa'],
+    shots: [
+      {
+        file: 'build.webp',
+        alt: 'A build folder checked by static-preflight: two pages pass, the menu, contact and product pages, the stylesheet and the old URL list each carry problem chips such as alt, broken link, noindex, share-card and Product JSON-LD, and the build stops with exit 1',
+        title: 'What it checks, file by file.',
+        caption:
+          'A five-page bakery site checked with the real CLI. Every chip is a line of its output, and the exit code stops the deploy.',
+        width: 2400,
+        height: 1422,
+      },
+      {
+        file: 'check.webp',
+        alt: 'static-preflight in a terminal listing 15 problems grouped by check, from description and alt to share-card, jsonld, redirects and legacy-urls',
+        title: 'The same run in a terminal.',
+        caption: 'Problems are grouped by check, and the last line says how many pages and old URLs were checked.',
+        width: 2400,
+        height: 2444,
+      },
+    ],
     ...links('static-preflight'),
   },
   {
@@ -700,6 +772,25 @@ test('pricing layout holds', async ({ page }) => {
       'horizontal overflow checker',
     ],
     related: ['siteprobe', 'static-preflight'],
+    shots: [
+      {
+        file: 'widths.webp',
+        alt: 'One page at two widths: at 390 px a 900 px block runs 534 px past the viewport edge with one error and two warnings, at 1440 px the same block fits and there are no problems',
+        title: 'One page, two widths.',
+        caption:
+          'At 390 px the page scrolls sideways; at 1440 px it is fine. viewport-qa measures every width you give it and names the element at fault.',
+        width: 2400,
+        height: 1341,
+      },
+      {
+        file: 'run.webp',
+        alt: 'viewport-qa in a terminal: at 390 by 844 one horizontal-overflow error and two warnings for div.wide, at 1440 by 900 no problems',
+        title: 'The report.',
+        caption: 'Each finding names the rule, the selector and the measurement.',
+        width: 2400,
+        height: 1188,
+      },
+    ],
     ...links('viewport-qa'),
   },
   {
@@ -831,6 +922,26 @@ const notesDelete = defineTool({
       'model context protocol',
     ],
     related: ['safe-html-pdf', 'translation-facts'],
+    shots: [
+      {
+        file: 'flow.webp',
+        alt: 'An agent deleting a note through an MCP server: the first call is refused with confirmation_required, a dry run returns the plan and a preview token, the user agrees, the confirmed call deletes it, a token for another note is refused, and the revision restores it',
+        title: 'Refused, previewed, confirmed, undoable.',
+        caption:
+          'The tool calls an agent makes to delete one note, with the replies mcp-guardrails sends back at each step.',
+        width: 2400,
+        height: 1597,
+      },
+      {
+        file: 'errors.webp',
+        alt: 'Two refused tool calls: a stale version answered with version_conflict and the current version, and a misspelled field answered with unknown_field and didYouMean title',
+        title: 'Errors that say what to do next.',
+        caption:
+          'A refusal carries the current version or the real field names, so the agent can fix its call instead of guessing.',
+        width: 2400,
+        height: 1037,
+      },
+    ],
     ...links('mcp-guardrails'),
   },
   {
@@ -980,6 +1091,25 @@ const { pdf } = await renderPdf('<h1>Invoice</h1>', { format: 'Letter', margin: 
       'pdf layout overflow check',
     ],
     related: ['mcp-guardrails', 'viewport-qa', 'static-preflight'],
+    shots: [
+      {
+        file: 'pipeline.webp',
+        alt: 'safe-html-pdf turning a model-written proposal.html into a three-page PDF with JavaScript and network off: page 1 has no warnings, page 2 overflows at div.card, page 3 has two broken images, plus a missing asset and a blocked request for the whole document',
+        title: 'Untrusted HTML in, a checked PDF out.',
+        caption:
+          'The HTML is rendered with JavaScript and the network off, then every page is checked for overflow, text outside the page and broken images.',
+        width: 2400,
+        height: 1591,
+      },
+      {
+        file: 'render.webp',
+        alt: 'safe-html-pdf in a terminal: wrote proposal.pdf, 3 pages, 15.1 KB, then 5 warnings with their page and code',
+        title: 'The same run in a terminal.',
+        caption: 'The PDF is written even when there are warnings; --strict turns them into a failed run.',
+        width: 2400,
+        height: 937,
+      },
+    ],
     ...links('safe-html-pdf'),
   },
   {
@@ -1117,6 +1247,24 @@ const { ok, problems } = checkTranslations(source, target, { keepTerms: ['Acme']
       'ai translation check',
     ],
     related: ['static-preflight', 'mcp-guardrails'],
+    shots: [
+      {
+        file: 'side-by-side.webp',
+        alt: 'en.json and de.json side by side with the facts highlighted: the brand Acme missing, $49.99 changed to 49,99 euros, 20% missing, the email and URL changed, the {name} placeholder renamed to {nom}, and one row that is fine',
+        title: 'What changed in translation.',
+        caption: 'Prices, percentages, emails, URLs, placeholders and brand terms are compared key by key.',
+        width: 2400,
+        height: 1274,
+      },
+      {
+        file: 'check.webp',
+        alt: 'translation-facts in a terminal: de.json with 6 problems, each with the key, what changed and the kind of fact, and fr.json clean',
+        title: 'The report.',
+        caption: 'One line per problem, with the key and the kind of fact.',
+        width: 2400,
+        height: 1037,
+      },
+    ],
     ...links('translation-facts'),
   },
   {
@@ -1241,6 +1389,25 @@ const { gpx, stats, shared, points } = makeShareable(xml, { trim: 500, maxPoints
       'remove timestamps from gpx',
     ],
     related: ['active-window-sessions', 'translation-facts'],
+    shots: [
+      {
+        file: 'map.webp',
+        alt: 'The same bike ride on two maps: the original track starts and ends at a home marker, the cleaned track starts and ends outside a 500 m circle around it',
+        title: 'The same ride, before and after.',
+        caption:
+          'The first and last 500 m are cut so the track no longer leads to the door. Waypoints, device names and extension data such as heart rate are never written.',
+        width: 2400,
+        height: 1442,
+      },
+      {
+        file: 'cli.webp',
+        alt: 'gpx-privacy in a terminal: ride.gpx written to ride-public.gpx, 500 m trimmed from the start and end, points reduced from 1,228 to 500, distance 7.77 km, climb 26 m, duration 0:40:54',
+        title: 'The summary it prints.',
+        caption: 'What was trimmed and simplified, and the stats of the clean copy.',
+        width: 2400,
+        height: 887,
+      },
+    ],
     ...links('gpx-privacy'),
   },
   {
@@ -1368,6 +1535,211 @@ console.log(aggregate(segments, { by: 'host' }));
       'get-windows',
     ],
     related: ['gpx-privacy', 'mcp-guardrails'],
+    shots: [
+      {
+        file: 'timeline.webp',
+        alt: 'Twelve window samples on a timeline turned into two segments: Code for 8 seconds and Google Chrome on github.com for 11 seconds, with a system alert and a half-second blip dropped and the idle time not counted',
+        title: 'Samples in, clean segments out.',
+        caption:
+          'sessionize() drops alerts and short blips and cuts idle time at the last input. aggregate() then totals by app or host.',
+        width: 2400,
+        height: 1357,
+      },
+      {
+        file: 'output.webp',
+        alt: 'The segments returned by sessionize() printed in a terminal: app, appId, start and end times for each segment',
+        title: 'What sessionize() returns.',
+        caption: 'Plain objects with the app, the page host for browsers, and start and end times.',
+        width: 2400,
+        height: 1690,
+      },
+    ],
     ...links('active-window-sessions'),
+  },
+  {
+    slug: 'bug-finder',
+    name: 'bug-finder',
+    category: 'Bug reports',
+    title: 'Screenshot bug report widget for React apps: bug-finder',
+    description:
+      'bug-finder is an open-source React bug report widget: people drag over the problem, mark up the screenshot and say what broke. You get it all in one callback.',
+    h1: 'bug-finder: screenshot bug reports for React apps',
+    tagline:
+      'A React widget for screenshot bug reports: drag over the problem, mark it up and say what went wrong. Your callback gets the image, the page and the device.',
+    intro: [
+      'bug-finder adds a "Report a bug" flow to any React app. The page dims and the person drags a box over the problem, or takes the whole screen. The screenshot opens with a box, arrow, pen, text and hide tool, next to a "What went wrong?" field and an optional email field. When they send it, your onSubmit gets the marked-up image, a clean copy, the page address, the viewport, the device and the time zone.',
+      'The screenshot is drawn from the page itself, so there is no screen-sharing prompt. Password fields and anything you mark with data-bugfinder-hide are blanked out before the image exists, and the Hide tool pixelates anything else. Hosted tools such as Marker.io, BugHerd and Userback keep reports on their servers; bug-finder is only the front end, so reports go wherever you send them.',
+      'It powers the "Report a bug" button in the Bundlewise CRM chat widget.',
+    ],
+    install: 'npm install bug-finder',
+    examples: [
+      {
+        title: 'Add a Report a bug button',
+        lang: 'ts',
+        code: `import { useState } from 'react';
+import { BugFinder } from 'bug-finder';
+
+export function ReportBugButton() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button onClick={() => setOpen(true)} data-bugfinder-ignore>Report a bug</button>
+      {open && (
+        <BugFinder
+          onClose={() => setOpen(false)}
+          onSubmit={async (report) => {
+            const form = new FormData();
+            form.append('message', report.message);
+            form.append('page', report.page.url);
+            if (report.screenshot) form.append('screenshot', report.screenshot);
+            await fetch('/api/bug-reports', { method: 'POST', body: form });
+            return { detail: 'Thanks, our team will take a look.' };
+          }}
+        />
+      )}
+    </>
+  );
+}`,
+      },
+      {
+        title: 'Show an error next to a field',
+        lang: 'ts',
+        code: `import { BugFinderError } from 'bug-finder';
+
+// Inside onSubmit:
+if (res.status === 422) throw new BugFinderError('Enter a valid email address.', 'email');`,
+      },
+      {
+        title: 'Brand colours and your own words',
+        lang: 'ts',
+        code: `<BugFinder
+  style={{ '--bf-accent': '#7c3aed', '--bf-selection': '#a78bfa' }}
+  labels={{ dialogTitle: 'Signaler un bug', send: 'Envoyer' }}
+  email="required"
+  verifiedEmail={user?.email}
+  onSubmit={send}
+  onClose={close}
+/>`,
+      },
+    ],
+    features: [
+      {
+        title: 'Select, mark up, send',
+        body: 'Drag over the problem or take the whole screen, then draw a box, an arrow, a pen line or a note on the screenshot. Undo and clear are one click, and Ctrl or Cmd+Z works too.',
+      },
+      {
+        title: 'No permission prompt',
+        body: 'The screenshot is drawn from the page with modern-screenshot, so nobody is asked to share a screen. Off-screen images are skipped and sticky headers stay where they are on screen.',
+      },
+      {
+        title: 'Private details stay private',
+        body: 'Password fields and elements with data-bugfinder-hide are blanked out before the image exists, data-bugfinder-ignore leaves your own launcher out, and the Hide tool pixelates anything else.',
+      },
+      {
+        title: 'Everything in one callback',
+        body: 'onSubmit gets the marked-up image, a clean copy, the message, the email, the page URL without its query string, the viewport, the screen, the device, the language and the time zone.',
+      },
+      {
+        title: 'Your colours and your words',
+        body: 'Styles ship with the component and work inside a shadow root. Seventeen --bf-* CSS variables set the colours, and every word can be replaced through labels.',
+      },
+      {
+        title: 'Fallbacks that still work',
+        body: 'When a page cannot be drawn, the person can choose or paste an image instead, or send text only. Big screenshots are re-encoded to WebP, PNG or JPEG to fit your size limit.',
+      },
+    ],
+    limits: [
+      'The screenshot is a copy of the DOM, not a pixel grab. Images and frames from other sites that do not allow it come out blank, and unusual CSS can render slightly differently.',
+      'Pages with more than 15,000 elements skip the pass that blanks off-screen images and fixes sticky headers, so those screenshots are slower.',
+      'It needs React 18 or newer and a browser with color-mix() (Chrome 111, Safari 16.2, Firefox 113 or newer).',
+      'It is only the front end. Storing reports, emailing the reporter and spam checks beyond the hidden honeypot field are up to your server.',
+    ],
+    faq: [
+      {
+        q: 'How do I add a bug report button to a React app?',
+        a: 'Install bug-finder, render <BugFinder> when someone clicks your Report a bug button, and send the report from onSubmit to your API. The component covers the page until onClose, so you control the button and where reports go.',
+      },
+      {
+        q: 'Does it need screen-sharing permission?',
+        a: 'No. It draws the screenshot from the page DOM, so there is no browser prompt. The trade-off is that content from other sites that does not allow it, such as some embedded frames, comes out blank; the person can still attach their own image.',
+      },
+      {
+        q: 'How do I keep passwords and personal data out of screenshots?',
+        a: 'Password fields are always blanked out. Add data-bugfinder-hide to anything else private, such as account numbers, and data-bugfinder-ignore to elements that should not appear at all. People can also pixelate any area with the Hide tool before sending.',
+      },
+      {
+        q: 'Is bug-finder an open-source alternative to Marker.io or BugHerd?',
+        a: 'It covers the in-app part: capture, annotate and describe. Hosted tools also store reports and connect to issue trackers. With bug-finder you send the report to your own API, a GitHub issue, Linear or an email from onSubmit.',
+      },
+    ],
+    keywords: [
+      'bug report widget',
+      'screenshot bug report',
+      'react feedback widget',
+      'visual feedback tool',
+      'annotate screenshot react',
+      'open source bug reporting tool',
+      'marker.io alternative',
+    ],
+    runtime: 'Web browser (React 18 or newer)',
+    related: ['viewport-qa', 'siteprobe', 'static-preflight'],
+    shots: [
+      {
+        file: 'loop.webp',
+        still: 'editor.webp',
+        alt: 'bug-finder in a billing app: a box dragged over a total that shows $NaN, the screenshot marked up with a box, an arrow and a note, then the report sent',
+        title: 'The whole flow.',
+        caption:
+          'Select the problem, mark it up, describe it, send. The demo app is in examples/demo of the repository.',
+        width: 1100,
+        height: 751,
+      },
+      {
+        file: 'editor.webp',
+        alt: 'The bug-finder editor: a red box around a $NaN total, an arrow and the note NaN after coupon, the card number pixelated and the API key blanked out, with the message and email fields below',
+        title: 'Mark it up and describe it.',
+        caption:
+          'Box, arrow, pen, text and hide tools on the screenshot, with the message and email fields on the same screen. The API key was blanked out automatically by data-bugfinder-hide.',
+        width: 2000,
+        height: 1365,
+      },
+      {
+        file: 'select.webp',
+        alt: 'The selection step: the page dimmed except a bright box dragged over the coupon and total rows, with its size shown and a bar that says Drag over the problem',
+        title: 'Drag over the problem.',
+        caption: 'Or take the whole screen. Esc cancels. The overlay itself never appears in the screenshot.',
+        width: 2000,
+        height: 1365,
+        half: true,
+      },
+      {
+        file: 'sent.webp',
+        alt: 'The sent card: Thanks, we got your report, Report #128 is open, with a Follow the report link and a Done button',
+        title: 'Tell people what happens next.',
+        caption: 'Return a detail and a link from onSubmit, such as the ticket number and its page.',
+        width: 1344,
+        height: 820,
+        half: true,
+      },
+      {
+        file: 'editor-dark.webp',
+        alt: 'The same bug report in a dark theme, set with the bf CSS variables',
+        title: 'Dark theme.',
+        caption: 'Ten CSS variables turn it dark to match the app.',
+        width: 2000,
+        height: 1365,
+        half: true,
+      },
+      {
+        file: 'custom.webp',
+        alt: 'The editor with French labels such as Signaler un bug and Envoyer, a violet Send button and blue marks',
+        title: 'Your colours and your language.',
+        caption: 'A violet accent and French labels, set with style and labels.',
+        width: 2000,
+        height: 1365,
+        half: true,
+      },
+    ],
+    ...links('bug-finder'),
   },
 ];

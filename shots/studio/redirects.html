@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>redirect-lint flatten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;500;600&display=block" rel="stylesheet">
+<link rel="stylesheet" href="studio.css?v=3">
+<style>
+.cols{display:grid;grid-template-columns:1.15fr 70px 1fr;align-items:center}
+.body{padding:12px 0 14px}
+.ln{display:flex;align-items:center;gap:12px;padding:5px 16px;font:400 14px/1.5 'JetBrains Mono',monospace}
+.ln code{font:inherit;white-space:pre;flex:1}
+.ln .n{width:20px;text-align:right;color:#9aabbb;font-size:12px}
+.ln.err{background:#fff0ec} .ln.warn{background:#fff8e8}
+.tg{font:700 12px 'Bricolage Grotesque',sans-serif;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.tg.err{background:#ffd9cf;color:#a3341a} .tg.warn{background:#ffecc2;color:#8a5b00} .tg.dim{background:#e8eef3;color:#4f6273}
+.mid{display:grid;place-items:center;color:var(--ink)}
+.mid svg{width:40px;height:40px}
+.foot{padding:12px 16px;border-top:1.5px solid var(--ink);font-size:14.5px;color:var(--slate)}
+.foot b{color:var(--ink)}
+</style></head><body>
+<div class="frame" id="frame">
+<p class="label"><span class="pkg">redirect-lint</span><span class="what">--flatten: every chain becomes one hop, the loop is left out</span></p>
+<div class="cols">
+<div class="panel"><div class="panel-head">_redirects <small>as written</small></div><div class="body"><div class="ln "><span class="n">1</span><code># Marketing site</code></div><div class="ln warn"><span class="n">2</span><code>/pricing-old   /pricing-2025     301</code><span class="tg warn">chain</span></div><div class="ln"><span class="n">3</span><code>/pricing-2025  /pricing          301</code></div><div class="ln warn"><span class="n">4</span><code>/blog/*        /articles/:splat  301</code><span class="tg warn">clash</span></div><div class="ln warn"><span class="n">5</span><code>/blog/hello    /articles/welcome 301</code><span class="tg warn">shadowed</span></div><div class="ln err"><span class="n">6</span><code>/team          /about/team       301</code><span class="tg err">loop</span></div><div class="ln"><span class="n">7</span><code>/about/team    /team             301</code></div><div class="ln "><span class="n">8</span><code>/docs/v1/*     /docs/:splat      308</code></div><div class="ln "><span class="n">9</span><code>/legacy        /410.html         410</code></div><div class="ln dim"><span class="n">10</span><code>/search?q=shoes /shop            301</code><span class="tg dim">unsupported</span></div><div class="ln warn"><span class="n">11</span><code>/contact       /contact-us       302</code><span class="tg warn">clash</span></div><div class="ln dim"><span class="n">12</span><code>/api/*         /index.html       200</code><span class="tg dim">unsupported</span></div><div class="ln warn"><span class="n">13</span><code>/old-contact   /contact          301</code><span class="tg warn">chain</span></div></div>
+<div class="foot"><b>1 error, 8 warnings</b> in 10 rules</div></div>
+<div class="mid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+<div class="panel"><div class="panel-head">_redirects <small>redirect-lint --flatten</small></div><div class="body"><div class="ln"><span class="n">1</span><code>/blog/hello    /articles/welcome  301</code></div><div class="ln"><span class="n">2</span><code>/contact       /contact-us        302</code></div><div class="ln"><span class="n">3</span><code>/legacy        /410.html          410</code></div><div class="ln"><span class="n">4</span><code>/old-contact   /contact-us        301</code></div><div class="ln"><span class="n">5</span><code>/pricing-2025  /pricing           301</code></div><div class="ln"><span class="n">6</span><code>/pricing-old   /pricing           301</code></div><div class="ln"><span class="n">7</span><code>/docs/v1/*     /docs/:splat       308</code></div><div class="ln"><span class="n">8</span><code>/blog/*        /articles/:splat   301</code></div></div>
+<div class="foot"><b>8 rules</b>, one hop each, most specific first</div></div>
+</div></div>
+<script>document.fonts.ready.then(()=>document.body.setAttribute('data-ready',''))</script>
+</body></html>

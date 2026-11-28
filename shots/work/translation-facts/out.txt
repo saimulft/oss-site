@@ -1,0 +1,10 @@
+de.json: 6 problems
+  pricing.title: missing Acme (term)
+  pricing.standard: changed $49.99 -> 49,99 € (price)
+  pricing.discount: missing 20% (percent)
+  pricing.contact: changed https://acme.example/pricing -> https://acme.example/preise (url)
+  pricing.contact: changed sales@acme.example -> vertrieb@acme.example (email)
+  cart.greeting: changed {name} -> {nom} (token)
+fr.json: ok (6 keys checked)
+
+6 problems in 1 of 2 files.

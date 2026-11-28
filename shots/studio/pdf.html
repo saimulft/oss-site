@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>safe-html-pdf pipeline</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;500;600&display=block"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="studio.css?v=3" />
+    <style>
+      /* The README's sample deck: three slides, the cards on slide 2 run off the bottom, slide 3 has a missing
+         and an external image. The warnings are the ones safe-html-pdf printed for it. */
+      .top {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 28px;
+        align-items: stretch;
+      }
+      .code {
+        padding: 16px 20px 18px;
+        font: 400 14px/1.6 'JetBrains Mono', monospace;
+        background: var(--night);
+        color: var(--term-text);
+        white-space: pre;
+        font-variant-ligatures: none;
+      }
+      .tag {
+        color: var(--cyan);
+      }
+      .bad {
+        color: var(--err);
+      }
+      .lock {
+        display: grid;
+        gap: 12px;
+        align-content: center;
+      }
+      .lock h3 {
+        margin: 0 0 2px;
+        font-size: 16px;
+      }
+      .lock div {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 11px 13px;
+        border: 1.5px solid var(--ink);
+        border-radius: 12px;
+        background: #fff;
+        font-size: 15px;
+        font-weight: 700;
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+      .lock svg {
+        flex: none;
+        color: var(--signal);
+      }
+      .down {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 22px 0 16px;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--slate);
+      }
+      .down::after {
+        content: '';
+        flex: 1;
+        border-top: 1.5px dashed var(--line);
+      }
+      .pages {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+      }
+      .slide {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        border: 1.5px solid var(--ink);
+        border-radius: 10px;
+        background: #fff;
+        padding: 14px 16px;
+        box-shadow: 4px 4px 0 var(--ink);
+        overflow: hidden;
+      }
+      .pg {
+        position: absolute;
+        top: 9px;
+        right: 11px;
+        font: 500 11.5px 'JetBrains Mono', monospace;
+        color: var(--slate);
+      }
+      .h {
+        height: 11px;
+        width: 55%;
+        border-radius: 6px;
+        background: var(--midnight);
+        margin-bottom: 10px;
+      }
+      .t {
+        height: 7px;
+        border-radius: 4px;
+        background: #dfe6ec;
+        margin-bottom: 7px;
+      }
+      .logo {
+        width: 46px;
+        height: 18px;
+        border-radius: 5px;
+        background: var(--signal);
+        margin-bottom: 14px;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 7px;
+        margin-top: 6px;
+      }
+      .cards div {
+        height: 62px;
+        border-radius: 6px;
+        background: #eef2f6;
+        border: 1px solid #d5dde5;
+      }
+      .cut {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 30px;
+        background: repeating-linear-gradient(135deg, rgba(201, 63, 27, 0.16) 0 7px, transparent 7px 14px);
+        border-top: 2px solid var(--ember);
+      }
+      .img {
+        display: inline-grid;
+        place-items: center;
+        width: 46%;
+        height: 74px;
+        margin-right: 5px;
+        border: 2px dashed #f0a48f;
+        border-radius: 7px;
+        color: var(--ember);
+        font: 600 11px 'JetBrains Mono', monospace;
+      }
+      .ok {
+        display: grid;
+        place-items: center;
+        position: absolute;
+        right: 12px;
+        bottom: 10px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #dcf5e6;
+        color: #1c7a45;
+        font-weight: 800;
+      }
+      .warns {
+        display: grid;
+        gap: 7px;
+        margin-top: 14px;
+      }
+      .warn {
+        display: inline-flex;
+        width: fit-content;
+        gap: 7px;
+        align-items: center;
+        padding: 5px 10px;
+        border-radius: 9px;
+        border: 1.5px solid var(--ink);
+        background: #fff;
+        font: 600 12.5px 'JetBrains Mono', monospace;
+        white-space: nowrap;
+      }
+      .warn.e {
+        color: var(--ember);
+      }
+      .warn.w {
+        color: #8a5b00;
+      }
+      .doc {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin: 22px 0 0;
+        padding-top: 16px;
+        border-top: 1.5px dashed var(--line);
+        font-size: 14px;
+        color: var(--slate);
+      }
+      .doc b {
+        margin-right: 4px;
+      }
+      .none {
+        margin-top: 14px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #1c7a45;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame" id="frame">
+      <p class="label"><span class="pkg">safe-html-pdf</span><span class="what">Untrusted HTML in, a checked PDF out</span></p>
+      <div class="top">
+        <div class="panel">
+          <div class="panel-head">proposal.html <small>written by a model</small></div>
+          <div class="code"><span class="tag">&lt;section class="slide"&gt;</span> &lt;img src="/logo.png"&gt; … <span class="tag">&lt;/section&gt;</span>
+<span class="tag">&lt;section class="slide"&gt;</span> &lt;div class="card"&gt;… ×9 <span class="tag">&lt;/section&gt;</span>
+<span class="tag">&lt;section class="slide"&gt;</span>
+  &lt;img src="/team.png"&gt;
+  &lt;img src="<span class="bad">https://cdn.example.com/photo.jpg</span>"&gt;
+<span class="tag">&lt;/section&gt;</span>
+<span class="bad">&lt;script&gt;fetch('https://…')&lt;/script&gt;</span></div>
+        </div>
+        <div class="lock">
+          <h3>Rendered locked down</h3>
+          <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>JavaScript off</div>
+          <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9" /><path d="M5.6 5.6l12.8 12.8" /></svg>Network off</div>
+          <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 7h18M3 12h18M3 17h10" /></svg>Only files from --assets</div>
+          <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>Hard time limit</div>
+        </div>
+      </div>
+      <p class="down">proposal.pdf, 3 pages, then a layout lint page by page: 5 warnings</p>
+      <div class="pages">
+        <div>
+          <div class="slide"><span class="pg">page 1</span><div class="logo"></div><div class="h"></div><div class="t" style="width: 80%"></div><div class="t" style="width: 62%"></div><span class="ok">✓</span></div>
+          <p class="none">No warnings</p>
+        </div>
+        <div>
+          <div class="slide"><span class="pg">page 2</span><div class="h" style="width: 40%"></div><div class="cards"><div></div><div></div><div></div><div></div><div></div><div></div></div><div class="cut"></div></div>
+          <div class="warns"><span class="warn e">overflow · div.card</span></div>
+        </div>
+        <div>
+          <div class="slide"><span class="pg">page 3</span><div class="h" style="width: 35%"></div><span class="img">/team.png</span><span class="img">cdn.example.com</span></div>
+          <div class="warns"><span class="warn w">broken-image · /team.png</span><span class="warn w">broken-image · cdn.example.com/photo.jpg</span></div>
+        </div>
+      </div>
+      <p class="doc"><b>And 2 for the whole document</b><span class="warn w">missing-asset · /team.png</span><span class="warn w">blocked-request · https://cdn.example.com/photo.jpg</span></p>
+    </div>
+    <script>
+      document.fonts.ready.then(() => document.body.setAttribute('data-ready', ''));
+    </script>
+  </body>
+</html>

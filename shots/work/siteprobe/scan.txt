@@ -1,0 +1,43 @@
+siteprobe https://example.com
+
+security   64/100  D  3 high, 1 medium, 3 low, 4 info, 16 passed
+seo        40/100  F  3 high, 3 medium, 1 low, 6 info, 6 passed
+speed      95/100  A  1 low, 20 passed
+
+HIGH (6)
+  [security] Content-Security-Policy header missing (missing-csp)
+      Fix: Add a Content-Security-Policy header. Minimum: Content-Security-Policy: default-src 'self'
+  [security] HSTS (HTTP Strict-Transport-Security) not configured (missing-hsts)
+      Fix: Add: Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  [security] HTTP does not redirect to HTTPS (no-https-redirect)
+      Fix: Set up a permanent 301 redirect from HTTP to HTTPS at the server, load balancer, or CDN level.
+  [seo] Missing meta description (missing-meta-description)
+      Fix: Add <meta name="description" content="…"> with 150–160 characters summarizing the page.
+  [seo] No H1 heading found (missing-h1)
+      Fix: Add one clear H1 that describes the page content and includes your primary keyword.
+  [seo] Little text in the page's HTML (~25 words) (thin-content)
+      Fix: Put the page's main text in the HTML, rendered on the server if JavaScript builds it now, and make sure it answers what people search for.
+
+MEDIUM (4)
+  [security] Clickjacking protection missing (missing-xfo)
+      Fix: Add: X-Frame-Options: SAMEORIGIN — or use CSP: Content-Security-Policy: frame-ancestors 'self'
+  [seo] Title too short (14 characters) (short-title)
+      Fix: Aim for 50–60 characters (25–30 in Chinese, Japanese or Korean) including brand and primary keyword.
+  [seo] Missing canonical URL (missing-canonical)
+      Fix: Add <link rel="canonical" href="https://example.com/"> pointing to the preferred URL.
+  [seo] Incomplete Open Graph tags (incomplete-open-graph)
+      Fix: Add og:title, og:description, og:image, and og:url meta tags.
+
+LOW (5)
+  [security] X-Content-Type-Options header missing (missing-xcto)
+      Fix: Add: X-Content-Type-Options: nosniff
+  [security] Referrer-Policy header missing (missing-referrer-policy)
+      Fix: Add: Referrer-Policy: strict-origin-when-cross-origin
+  [security] Cross-Origin-Opener-Policy (COOP) missing (missing-coop)
+      Fix: Add: Cross-Origin-Opener-Policy: same-origin (or same-origin-allow-popups if needed).
+  [seo] No sitemap found (no-sitemap)
+      Fix: Publish a sitemap at /sitemap.xml, list it in robots.txt and submit it in Google Search Console.
+  [speed] No Cache-Control header on HTML (no-cache-control)
+      Fix: Set appropriate Cache-Control (e.g. max-age=3600 for semi-static pages). Use CDN cache rules for static HTML where possible.
+
+10 info finding(s) hidden. Use --verbose to list them.

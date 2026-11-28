@@ -1,0 +1,8 @@
+/blog/hello    /articles/welcome  301
+/contact       /contact-us        302
+/legacy        /410.html          410
+/old-contact   /contact-us        301
+/pricing-2025  /pricing           301
+/pricing-old   /pricing           301
+/docs/v1/*     /docs/:splat       308
+/blog/*        /articles/:splat   301

@@ -7,7 +7,18 @@ import { JsonLd } from '@/components/json-ld';
 import { PackageCard } from '@/components/package-card';
 import { PageHero } from '@/components/page-hero';
 import { pageMetadata } from '@/lib/metadata';
-import { absolute, author, authorProfiles, getPackage, ogImagePath, packages, pagePath, seoFor } from '@/lib/site';
+import {
+  absolute,
+  author,
+  authorProfiles,
+  getPackage,
+  ogImagePath,
+  packages,
+  pagePath,
+  seoFor,
+  shotPath,
+} from '@/lib/site';
+import type { Shot } from '@/content/packages';
 
 export const dynamicParams = false;
 
@@ -38,6 +49,42 @@ function SectionHead({ id, children }: { id: string; children: React.ReactNode }
 
 const sectionClass = 'border-t-[1.5px] border-line pt-10 mt-14 first:mt-0 first:border-t-0 first:pt-0';
 
+/** A screenshot with its caption. Animated files fall back to their still when the visitor asks for less motion. */
+function ShotFigure({ slug, shot, lead = false }: { slug: string; shot: Shot; lead?: boolean }) {
+  return (
+    <figure className="m-0">
+      {/* The image links to the full-size file, so a terminal shot can be read on a phone. */}
+      <a
+        href={shotPath(slug, shot.file)}
+        target="_blank"
+        rel="noopener"
+        className={`block cursor-zoom-in overflow-hidden border-[1.5px] border-ink bg-mist focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal ${lead ? 'rounded-box shadow-hard-lg' : 'rounded-2xl shadow-hard'}`}
+      >
+        <picture>
+          {shot.still && <source media="(prefers-reduced-motion: reduce)" srcSet={shotPath(slug, shot.still)} />}
+          <img
+            src={shotPath(slug, shot.file)}
+            alt={shot.alt}
+            width={shot.width}
+            height={shot.height}
+            loading={lead ? 'eager' : 'lazy'}
+            fetchPriority={lead ? 'high' : undefined}
+            decoding="async"
+            className="block h-auto w-full"
+          />
+        </picture>
+      </a>
+      {(shot.title || shot.caption) && (
+        <figcaption
+          className={`mt-4 text-slate ${lead ? 'max-w-[48rem] text-[1.0625rem] leading-relaxed' : 'text-base leading-relaxed'}`}
+        >
+          {shot.title && <strong className="font-semibold text-ink">{shot.title}</strong>} {shot.caption}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
 export default async function PackagePageView({ params }: PageProps<'/[slug]'>) {
   const pkg = getPackage((await params).slug);
   if (!pkg) notFound();
@@ -45,9 +92,11 @@ export default async function PackagePageView({ params }: PageProps<'/[slug]'>) 
   const url = absolute(pagePath(pkg.slug));
   const related = pkg.related.map(getPackage).filter((p) => p !== undefined);
   const readme = `${pkg.github}#readme`;
+  const [lead, ...gallery] = pkg.shots ?? [];
 
   const sections = [
     { id: 'overview', label: 'Overview', show: pkg.intro.length > 0 },
+    { id: 'screenshots', label: 'Screenshots', show: gallery.length > 0 },
     { id: 'examples', label: 'Examples', show: pkg.examples.length > 0 },
     { id: 'features', label: 'Features', show: pkg.features.length > 0 },
     { id: 'cli', label: 'CLI', show: !!pkg.cli && pkg.cli.usage.length > 0 },
@@ -65,7 +114,8 @@ export default async function PackagePageView({ params }: PageProps<'/[slug]'>) 
       url,
       codeRepository: pkg.github,
       programmingLanguage: 'TypeScript',
-      runtimePlatform: 'Node.js',
+      runtimePlatform: pkg.runtime ?? 'Node.js',
+      ...(lead ? { image: absolute(shotPath(pkg.slug, lead.still ?? lead.file)) } : {}),
       license: 'https://opensource.org/licenses/MIT',
       isAccessibleForFree: true,
       keywords: pkg.keywords.join(', '),
@@ -144,6 +194,12 @@ export default async function PackagePageView({ params }: PageProps<'/[slug]'>) 
         </div>
       </PageHero>
 
+      {lead && (
+        <div className="shell pad pt-10 sm:pt-14">
+          <ShotFigure slug={pkg.slug} shot={lead} lead />
+        </div>
+      )}
+
       <div className="shell pad grid gap-12 pt-16 sm:pt-20 lg:grid-cols-[minmax(0,1fr)_14rem] lg:gap-16 xl:grid-cols-[minmax(0,1fr)_16rem]">
         <main id="main" tabIndex={-1} className="min-w-0 outline-none">
           {pkg.intro.length > 0 && (
@@ -154,6 +210,19 @@ export default async function PackagePageView({ params }: PageProps<'/[slug]'>) 
                   <p key={i} className="m-0 text-[1.125rem] leading-[1.7]">
                     {para}
                   </p>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {gallery.length > 0 && (
+            <section aria-labelledby="screenshots" className={sectionClass}>
+              <SectionHead id="screenshots">Screenshots</SectionHead>
+              <div className="mt-8 grid gap-x-8 gap-y-10 sm:grid-cols-2">
+                {gallery.map((shot) => (
+                  <div key={shot.file} className={`reveal ${shot.half ? '' : 'sm:col-span-2'}`}>
+                    <ShotFigure slug={pkg.slug} shot={shot} />
+                  </div>
                 ))}
               </div>
             </section>

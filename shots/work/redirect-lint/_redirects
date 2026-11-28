@@ -1,0 +1,13 @@
+# Marketing site
+/pricing-old   /pricing-2025     301
+/pricing-2025  /pricing          301
+/blog/*        /articles/:splat  301
+/blog/hello    /articles/welcome 301
+/team          /about/team       301
+/about/team    /team             301
+/docs/v1/*     /docs/:splat      308
+/legacy        /410.html         410
+/search?q=shoes /shop            301
+/contact       /contact-us       302
+/api/*         /index.html       200
+/old-contact   /contact          301

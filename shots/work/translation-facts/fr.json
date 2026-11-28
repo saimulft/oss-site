@@ -1,0 +1,12 @@
+{
+  "pricing": {
+    "title": "Tarifs Acme, tout simplement",
+    "standard": "Acme Standard coûte $49.99 par mois pour 5 places.",
+    "discount": "Économisez 20% en payant à l'année.",
+    "contact": "Des questions ? Écrivez à sales@acme.example ou visitez https://acme.example/pricing."
+  },
+  "cart": {
+    "greeting": "Bonjour {name}, votre commande part dans 3 jours.",
+    "total": "Total : {{amount}}"
+  }
+}

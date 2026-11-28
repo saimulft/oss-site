@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>active-window-sessions timeline</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;500;600&display=block"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="studio.css?v=3" />
+    <style>
+      .rows {
+        padding: 26px 28px 30px;
+        display: grid;
+        gap: 30px;
+      }
+      .row h3 {
+        margin: 0 0 4px;
+        font-size: 18px;
+        letter-spacing: -0.01em;
+      }
+      .row p {
+        margin: 0 0 16px;
+        color: var(--slate);
+        font-size: 15px;
+      }
+      .track {
+        position: relative;
+        height: 64px;
+        border-radius: 12px;
+        background: var(--mist);
+        border: 1.5px solid var(--line);
+      }
+      .axis {
+        position: relative;
+        height: 22px;
+        margin-top: 8px;
+        font: 500 12.5px 'JetBrains Mono', monospace;
+        color: var(--slate);
+      }
+      .axis span {
+        position: absolute;
+        transform: translateX(-50%);
+        white-space: nowrap;
+      }
+      .axis span:last-child {
+        transform: translateX(-100%);
+      }
+      .row:first-child p {
+        margin-bottom: 46px;
+      }
+      .dot {
+        position: absolute;
+        top: 50%;
+        width: 18px;
+        height: 18px;
+        margin: -9px 0 0 -9px;
+        border-radius: 50%;
+        border: 2px solid var(--ink);
+      }
+      .code {
+        background: #4f7df3;
+      }
+      .chrome {
+        background: var(--signal);
+      }
+      .alert {
+        background: #b7c3cf;
+      }
+      .note {
+        position: absolute;
+        top: -30px;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: var(--slate);
+      }
+      .note::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 18px;
+        height: 12px;
+        border-left: 1.5px dashed var(--slate);
+      }
+      .idle {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        border-radius: 0 11px 11px 0;
+        background: repeating-linear-gradient(135deg, #e7edf2 0 8px, #f5f8fa 8px 16px);
+        display: grid;
+        place-items: center;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--slate);
+      }
+      .bar {
+        position: absolute;
+        top: 9px;
+        bottom: 9px;
+        border-radius: 9px;
+        border: 1.5px solid var(--ink);
+        box-shadow: 3px 3px 0 var(--ink);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 14px;
+        color: #fff;
+        font-size: 14.5px;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .bar small {
+        font: 500 12.5px 'JetBrains Mono', monospace;
+        opacity: 0.9;
+      }
+      .break {
+        position: absolute;
+        top: -4px;
+        bottom: -4px;
+        width: 14px;
+        margin-left: -7px;
+        background: linear-gradient(100deg, transparent 40%, #fff 40% 60%, transparent 60%);
+      }
+      .legend {
+        display: flex;
+        gap: 20px;
+        font-size: 14px;
+        color: var(--slate);
+        padding: 0 28px 22px;
+      }
+      .legend i {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 1.5px solid var(--ink);
+        margin-right: 6px;
+        vertical-align: -1px;
+      }
+      .total {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        font-size: 15px;
+      }
+      .total code {
+        font: 500 14px 'JetBrains Mono', monospace;
+        background: var(--mist);
+        border: 1.5px solid var(--line);
+        border-radius: 8px;
+        padding: 6px 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame" id="frame">
+      <p class="label"><span class="pkg">active-window-sessions</span><span class="what">12 window samples in, 2 clean segments out</span></p>
+      <div class="panel">
+        <div class="rows">
+          <div class="row">
+            <h3>What the poller saw</h3>
+            <p>One sample every 2 seconds: the app in front, and the page for browsers.</p>
+            <div class="track" id="samples"></div>
+            <div class="axis" id="axis1"></div>
+          </div>
+          <div class="row">
+            <h3>What <span class="mono">sessionize()</span> returns</h3>
+            <p>The alert and the half-second blip are dropped, and the idle time is cut at the last input.</p>
+            <div class="track" id="segments"></div>
+            <div class="axis" id="axis2"></div>
+          </div>
+          <div class="total">
+            <b>aggregate(segments, &#123; by: 'host' &#125;)</b>
+            <code>github.com · 11 s · 1 segment</code>
+            <span style="color: var(--slate)">The page paths are gone.</span>
+          </div>
+        </div>
+        <div class="legend"><span><i class="code"></i>Code</span><span><i class="chrome"></i>Google Chrome</span><span><i class="alert"></i>System alert</span></div>
+      </div>
+    </div>
+    <script>
+      // The README example, run with the built package: segments Code 0 to 8 s, Chrome (github.com) 8 to 19 s, idle after 19 s.
+      // The axis is stretched from 0 to 20 s and compressed from 20 to 70 s.
+      const W = 1044;
+      const x = (s) => (s <= 20 ? (s / 20) * 0.78 * W : 0.78 * W + ((s - 20) / 50) * 0.22 * W);
+      const samples = [
+        [0, 'code'], [2, 'code'], [4, 'code'], [6, 'code'], [8, 'chrome'], [10, 'chrome'], [12, 'alert', 'Alert in front'],
+        [14, 'chrome'], [15, 'code', '0.5 s blip'], [15.5, 'chrome'], [19, 'chrome', 'Last input'], [70, 'chrome', 'Idle 51 s'],
+      ];
+      const sEl = document.getElementById('samples');
+      for (const [t, cls, note] of samples) {
+        const d = document.createElement('div');
+        d.className = `dot ${cls}`;
+        d.style.left = `${x(t) + (t === 70 ? -12 : t === 0 ? 12 : 0)}px`;
+        sEl.appendChild(d);
+        if (note) {
+          const n = document.createElement('div');
+          n.className = 'note';
+          n.style.left = d.style.left;
+          n.textContent = note;
+          sEl.appendChild(n);
+        }
+      }
+      const seg = document.getElementById('segments');
+      const bar = (from, to, cls, html) => {
+        const b = document.createElement('div');
+        b.className = `bar ${cls}`;
+        b.style.left = `${x(from) + 6}px`;
+        b.style.width = `${x(to) - x(from) - 8}px`;
+        b.innerHTML = html;
+        seg.appendChild(b);
+      };
+      const idle = document.createElement('div');
+      idle.className = 'idle';
+      idle.style.left = `${x(19)}px`;
+      idle.style.right = '0';
+      idle.textContent = 'Idle: not counted';
+      seg.appendChild(idle);
+      bar(0, 8, 'code', 'Code <small>8 s</small>');
+      bar(8, 19, 'chrome', 'Google Chrome · github.com <small>11 s</small>');
+      for (const id of ['axis1', 'axis2']) {
+        const a = document.getElementById(id);
+        for (const t of [0, 5, 10, 15, 20, 45, 70]) {
+          const s = document.createElement('span');
+          s.style.left = `${t === 70 ? W : Math.max(x(t), 10)}px`;
+          s.textContent = `${t} s`;
+          a.appendChild(s);
+        }
+      }
+      for (const id of ['samples', 'segments']) {
+        const br = document.createElement('div');
+        br.className = 'break';
+        br.style.left = `${x(20)}px`;
+        document.getElementById(id).appendChild(br);
+      }
+      document.fonts.ready.then(() => document.body.setAttribute('data-ready', ''));
+    </script>
+  </body>
+</html>

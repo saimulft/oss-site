@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>static-preflight build folder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;500;600&display=block"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="studio.css?v=3" />
+    <style>
+      /* shots/work/static-preflight: a five-page bakery site, checked with the real CLI. Every chip is a line of check.txt. */
+      .cols {
+        display: grid;
+        grid-template-columns: 1fr 330px;
+        gap: 28px;
+        align-items: start;
+      }
+      .tree {
+        padding: 8px 0 6px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 14px;
+        align-items: start;
+        padding: 11px 20px;
+        border-bottom: 1px solid var(--line);
+      }
+      .row:last-child {
+        border-bottom: 0;
+      }
+      .file {
+        display: flex;
+        gap: 9px;
+        align-items: center;
+        font: 500 14px 'JetBrains Mono', monospace;
+        color: var(--ink);
+        white-space: nowrap;
+        padding-top: 3px;
+      }
+      .file svg {
+        flex: none;
+        color: var(--slate);
+      }
+      .file.sub {
+        padding-left: 22px;
+      }
+      .file.out {
+        color: var(--slate);
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .c {
+        display: inline-flex;
+        gap: 6px;
+        align-items: center;
+        padding: 3px 9px;
+        border-radius: 8px;
+        border: 1.5px solid #f3b3a2;
+        background: #fff3ef;
+        font: 500 12.5px 'JetBrains Mono', monospace;
+        color: #8f2c14;
+        white-space: nowrap;
+      }
+      .c b {
+        font-weight: 700;
+        color: var(--ember);
+      }
+      .pass {
+        font: 700 13.5px 'Bricolage Grotesque', sans-serif;
+        color: #1c7a45;
+        padding-top: 3px;
+      }
+      .side {
+        display: grid;
+        gap: 22px;
+      }
+      .share {
+        padding: 18px;
+      }
+      .bubble {
+        border: 1.5px solid var(--ink);
+        border-radius: 16px 16px 16px 4px;
+        overflow: hidden;
+        background: #fff;
+      }
+      .bubble .msg {
+        padding: 10px 14px;
+        font-size: 15px;
+        color: #2563eb;
+        text-decoration: underline;
+      }
+      .bubble .img {
+        height: 120px;
+        display: grid;
+        place-items: center;
+        background: repeating-linear-gradient(135deg, #eef2f6 0 10px, #f7f9fb 10px 20px);
+        border-top: 1.5px solid var(--line);
+        border-bottom: 1.5px solid var(--line);
+        font: 600 12.5px 'JetBrains Mono', monospace;
+        color: var(--slate);
+      }
+      .bubble .meta {
+        padding: 10px 14px 12px;
+      }
+      .bubble .t {
+        height: 10px;
+        width: 70%;
+        border-radius: 5px;
+        background: #e6ecf1;
+        margin-bottom: 7px;
+      }
+      .bubble .d {
+        height: 8px;
+        width: 88%;
+        border-radius: 4px;
+        background: #eef2f6;
+      }
+      .note {
+        margin: 12px 0 0;
+        font-size: 14.5px;
+        line-height: 1.45;
+        color: var(--slate);
+      }
+      .note b {
+        color: var(--ink);
+      }
+      .gate {
+        border: 1.5px solid var(--ink);
+        border-radius: 16px;
+        background: var(--night);
+        color: var(--term-text);
+        box-shadow: 6px 6px 0 var(--ink);
+        padding: 16px 18px;
+        font: 400 14px/1.65 'JetBrains Mono', monospace;
+        font-variant-ligatures: none;
+      }
+      .gate .p {
+        color: var(--peach);
+      }
+      .gate .x {
+        color: var(--err);
+        font-weight: 600;
+      }
+      .gate .stop {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #2a3c50;
+        font: 700 15px 'Bricolage Grotesque', sans-serif;
+        color: #fff;
+      }
+      .gate .stop i {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--signal);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame" id="frame">
+      <p class="label"><span class="pkg">static-preflight</span><span class="what">A build folder, checked before it ships</span></p>
+      <div class="cols">
+        <div class="panel">
+          <div class="panel-head">out/ <small>5 pages, 3 old URLs</small></div>
+          <div class="tree" id="tree"></div>
+        </div>
+        <div class="side">
+          <div class="panel">
+            <div class="panel-head">/contact/, shared <small>no share card</small></div>
+            <div class="share">
+              <div class="bubble">
+                <div class="msg">crumbandco.example/contact/</div>
+                <div class="img">no og:image</div>
+                <div class="meta"><div class="t"></div><div class="d"></div></div>
+              </div>
+              <p class="note"><b>share-card (4)</b>: no og:title, og:description, og:image or twitter:card, so the link shows up bare.</p>
+            </div>
+          </div>
+          <div class="gate">
+            <div><span class="p">$</span> npm run build</div>
+            <div class="p">&gt; postbuild</div>
+            <div>static-preflight out …</div>
+            <div class="x">15 problems found.</div>
+            <div class="stop"><i></i>Exit 1: the deploy stops here</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const icon = {
+        file: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/></svg>',
+        dir: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6a1 1 0 0 1 1-1h5l2 2h9a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/></svg>',
+      };
+      // [path, depth, chips[[check, detail]], class]
+      const rows = [
+        ['index.html', 0, []],
+        ['about/index.html', 0, []],
+        ['menu/index.html', 0, [['alt', '/img/loaf.jpg'], ['anchors', '#pastries'], ['redirects', '/menu hides this page']]],
+        ['contact/index.html', 0, [['description', 'missing'], ['links', '/old-contact'], ['noindex', 'robots tag'], ['share-card', '4 tags missing']]],
+        ['products/sourdough/index.html', 0, [['srcset', '/img/loaf@2x.jpg'], ['jsonld', 'no Product']]],
+        ['assets/site.css', 0, [['stylesheets', '/img/bg.png']]],
+        ['old-urls.txt', 0, [['legacy-urls', '/product/rye-bread/'], ['legacy-urls', '/about-us/']], 'out'],
+      ];
+      const tree = document.getElementById('tree');
+      for (const [path, depth, chips, cls] of rows) {
+        const r = document.createElement('div');
+        r.className = 'row';
+        const f = document.createElement('div');
+        f.className = `file ${depth ? 'sub' : ''} ${cls ?? ''}`;
+        f.innerHTML = icon.file + path;
+        r.appendChild(f);
+        const c = document.createElement('div');
+        if (chips.length) {
+          c.className = 'chips';
+          for (const [check, detail] of chips) {
+            const s = document.createElement('span');
+            s.className = 'c';
+            s.innerHTML = `<b>${check}</b>${detail}`;
+            c.appendChild(s);
+          }
+        } else {
+          c.className = 'pass';
+          c.textContent = '✓ No problems';
+        }
+        r.appendChild(c);
+        tree.appendChild(r);
+      }
+      document.fonts.ready.then(() => document.body.setAttribute('data-ready', ''));
+    </script>
+  </body>
+</html>

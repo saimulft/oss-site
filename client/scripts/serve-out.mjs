@@ -17,6 +17,8 @@ const types = {
   '.xml': 'application/xml',
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
+  '.webp': 'image/webp',
+  '.gif': 'image/gif',
   '.ico': 'image/x-icon',
   '.woff2': 'font/woff2',
   '.webmanifest': 'application/manifest+json',
@@ -27,7 +29,10 @@ function parseHeaders(text) {
   for (const line of text.split('\n')) {
     if (!line.trim() || line.trim().startsWith('#')) continue;
     if (!/^\s/.test(line)) rules.push({ pattern: line.trim(), headers: [] });
-    else {
+    else if (line.trim().startsWith('!')) {
+      // `! Name` removes a header an earlier rule set, as on Cloudflare Pages.
+      rules.at(-1)?.headers.push(['!', line.trim().slice(1).trim()]);
+    } else {
       const at = line.indexOf(':');
       rules.at(-1)?.headers.push([line.slice(0, at).trim(), line.slice(at + 1).trim()]);
     }
@@ -62,7 +67,11 @@ createServer(async (req, res) => {
   for (const rule of rules) {
     // Cloudflare applies only the wildcard rule to the 404 page.
     const applies = status === 200 ? matches(rule.pattern, path) : rule.pattern === '/*';
-    if (applies) for (const [k, v] of rule.headers) if (!(noCsp && k === 'Content-Security-Policy')) headers[k] = v;
+    if (!applies) continue;
+    for (const [k, v] of rule.headers) {
+      if (k === '!') delete headers[v];
+      else if (!(noCsp && k === 'Content-Security-Policy')) headers[k] = v;
+    }
   }
   res.writeHead(status, headers);
   res.end(req.method === 'HEAD' ? undefined : await readFile(file));

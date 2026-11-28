@@ -1,0 +1,31 @@
+{
+ "pkg": "safe-html-pdf",
+ "what": "Untrusted HTML to PDF, with a layout lint",
+ "title": "~/quotes",
+ "commands": [
+  "safe-html-pdf proposal.html -o proposal.pdf --format slides --page-selector section.slide --assets assets"
+ ],
+ "output": "Wrote proposal.pdf (3 pages, 15.1 KB)\n\n5 warnings\n  page 2  overflow          Page 2 overflows its 1280 x 720 area: div.card\n  page 3  broken-image      Page 3: image failed to load: /team.png\n  page 3  broken-image      Page 3: image failed to load: https://cdn.example.com/photo.jpg\n  -       missing-asset     No file was served for the image request to http://document.invalid/team.png\n  -       blocked-request   Blocked image request to https://cdn.example.com/photo.jpg\n",
+ "rules": [
+  [
+   "^Wrote",
+   "ok"
+  ],
+  [
+   "^\\d+ warnings",
+   "warn"
+  ],
+  [
+   "overflow",
+   "err"
+  ],
+  [
+   "broken-image",
+   "warn"
+  ],
+  [
+   "^  -",
+   "dim"
+  ]
+ ]
+}

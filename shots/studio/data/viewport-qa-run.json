@@ -1,0 +1,39 @@
+{
+ "pkg": "viewport-qa",
+ "what": "Layout problems, measured at every width",
+ "title": "~/landing",
+ "commands": [
+  "npx viewport-qa overflow.html --widths 390,1440"
+ ],
+ "output": "viewport-qa  overflow.html\n\n390x844 @2x  1 error, 2 warnings\n  error    horizontal-overflow  html\n           Page scrolls sideways: scrollWidth 924px against a 390px viewport (534px too wide).\n  warning  offscreen-element  div.wide\n           Element runs 534px past the right edge (left 24, right 924, viewport 390).\n  warning  edge-touching  div.wide\n           Box (#fee2e2) touches the right edge of the viewport: left 24px, right -534px.\n\n1440x900 @2x  no problems\n\n1 error, 2 warnings across 2 widths.\n",
+ "rules": [
+  [
+   "^viewport-qa",
+   "head"
+  ],
+  [
+   "^\\d+x\\d+ @\\dx +no problems",
+   "ok"
+  ],
+  [
+   "^\\d+x\\d+",
+   "head"
+  ],
+  [
+   "^  error",
+   "err"
+  ],
+  [
+   "^  warning",
+   "warn"
+  ],
+  [
+   "^ {11}",
+   "dim"
+  ],
+  [
+   "across",
+   "head"
+  ]
+ ]
+}

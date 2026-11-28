@@ -16,3 +16,8 @@
 
 /og/*
   Cache-Control: public, max-age=86400
+
+# The package READMEs on npm and GitHub show these pictures from this site, so they drop the same-origin policy.
+/shots/*
+  ! Cross-Origin-Resource-Policy
+  Cache-Control: public, max-age=86400

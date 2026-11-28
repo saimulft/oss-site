@@ -29,6 +29,7 @@ export const lastRelease = Object.values(releases)
 /** Category order on the hub and in the footer. */
 export const categories: Category[] = [
   'Web QA',
+  'Bug reports',
   'AI agents',
   'Documents',
   'Localization',
@@ -39,6 +40,7 @@ export const categories: Category[] = [
 export const absolute = (path: string) => `${siteUrl}${path}`;
 export const pagePath = (slug: string) => `/${slug}/`;
 export const ogImagePath = (slug: string) => `/og/${slug}.png`;
+export const shotPath = (slug: string, file: string) => `/shots/${slug}/${file}`;
 
 export function getPackage(slug: string): PackagePage | undefined {
   return packages.find((p) => p.slug === slug);

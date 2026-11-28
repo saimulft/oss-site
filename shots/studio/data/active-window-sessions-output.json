@@ -1,0 +1,31 @@
+{
+ "pkg": "active-window-sessions",
+ "what": "sessionize() on the samples from the timeline",
+ "title": "~/tracker",
+ "commands": [
+  "node example.mjs"
+ ],
+ "output": "[\n  {\n    app: 'Code',\n    appId: 'com.microsoft.VSCode',\n    startMs: 1772442000000,\n    endMs: 1772442008000\n  },\n  {\n    app: 'Google Chrome',\n    appId: 'com.google.Chrome',\n    host: 'github.com',\n    startMs: 1772442008000,\n    endMs: 1772442019000\n  }\n]\n[\n  {\n    key: 'github.com',\n    name: 'github.com',\n    durationMs: 11000,\n    segmentCount: 1\n  }\n]\n",
+ "rules": [
+  [
+   "app: 'Code'",
+   "cyan"
+  ],
+  [
+   "app: 'Google Chrome'",
+   "warn"
+  ],
+  [
+   "host: 'github.com'",
+   "ok"
+  ],
+  [
+   "key: 'github.com'",
+   "ok"
+  ],
+  [
+   "durationMs",
+   "ok"
+  ]
+ ]
+}

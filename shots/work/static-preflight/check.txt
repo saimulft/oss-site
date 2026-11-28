@@ -1,0 +1,38 @@
+description (1)
+  /contact/index.html: no meta description
+
+alt (1)
+  /menu/index.html: image without alt: /img/loaf.jpg
+
+links (1)
+  /contact/index.html: broken link /old-contact
+
+anchors (1)
+  /menu/index.html: anchor #pastries has no target
+
+srcset (1)
+  /products/sourdough/index.html: missing srcset image: /img/loaf@2x.jpg
+
+stylesheets (1)
+  /assets/site.css: missing file in url(): /img/bg.png
+
+noindex (1)
+  /contact/index.html: has a noindex robots tag
+
+share-card (4)
+  /contact/index.html: no og:title
+  /contact/index.html: no og:description
+  /contact/index.html: no og:image
+  /contact/index.html: no twitter:card
+
+jsonld (1)
+  /products/sourdough/index.html: no Product JSON-LD
+
+redirects (1)
+  redirect /menu hides the page /menu
+
+legacy-urls (2)
+  old URL /product/rye-bread/ has no page and no redirect
+  old URL /about-us/ has no page and no redirect
+
+15 problems found. Checked 5 pages and 3 old URLs.

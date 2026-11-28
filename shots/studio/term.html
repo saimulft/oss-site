@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Terminal shot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@400;500;600&display=block"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="studio.css?v=3" />
+  </head>
+  <body>
+    <div class="frame" id="frame">
+      <p class="label"><span class="pkg" id="pkg"></span><span class="what" id="what"></span></p>
+      <div class="term">
+        <div class="term-bar"><i></i><i></i><i></i><span id="title"></span></div>
+        <pre id="out"></pre>
+      </div>
+    </div>
+    <script>
+      // Draws data/<id>.json: { pkg, what, title, commands: [..], output, rules: [[regex, class], ...] }.
+      // The output text is shown exactly as the tool printed it; rules only colour whole lines.
+      const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
+      const id = new URLSearchParams(location.search).get('id');
+      fetch(`data/${id}.json`)
+        .then((r) => r.json())
+        .then((d) => {
+          document.getElementById('pkg').textContent = d.pkg;
+          document.getElementById('what').textContent = d.what ?? '';
+          document.getElementById('title').textContent = d.title ?? '~';
+          const rules = (d.rules ?? []).map(([re, cls]) => [new RegExp(re), cls]);
+          const lines = [];
+          for (const c of d.commands ?? []) lines.push(`<span class="prompt">$</span> <span class="cmd">${esc(c)}</span>`);
+          for (const line of d.output.replace(/\n+$/, '').split('\n')) {
+            const hit = rules.find(([re]) => re.test(line));
+            lines.push(hit ? `<span class="${hit[1]}">${esc(line)}</span>` : esc(line));
+          }
+          if (d.after) lines.push('', `<span class="prompt">$</span> <span class="cmd">${esc(d.after)}</span>`);
+          const pre = document.getElementById('out');
+          pre.innerHTML = lines.join('\n');
+          if (d.clip) {
+            pre.style.maxHeight = d.clip + 'px';
+            pre.classList.add('clipped');
+          }
+          document.fonts.ready.then(() => document.body.setAttribute('data-ready', ''));
+        });
+    </script>
+  </body>
+</html>
